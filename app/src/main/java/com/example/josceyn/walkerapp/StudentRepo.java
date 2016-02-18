@@ -4,8 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import java.util.ArrayList;
-import java.util.HashMap;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 public class StudentRepo {
     private DBHelper dbHelper;
@@ -18,10 +18,13 @@ public class StudentRepo {
 
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+
         ContentValues values = new ContentValues();
-        values.put(Student.KEY_age, student.age);
-        values.put(Student.KEY_email,student.email);
+        values.put(Student.KEY_username, student.username);
+        values.put(Student.KEY_password,student.password);
         values.put(Student.KEY_name, student.name);
+        values.put(Student.KEY_PT,student.pt);
+        values.put(Student.KEY_admin, student.admin);
 
         // Inserting Row
         long student_Id = db.insert(Student.TABLE, null, values);
@@ -33,7 +36,7 @@ public class StudentRepo {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         // It's a good practice to use parameter ?, instead of concatenate string
-        db.delete(Student.TABLE, Student.KEY_ID + "= ?", new String[] { String.valueOf(student_Id) });
+        db.delete(Student.TABLE, Student.KEY_ID + "= ?", new String[]{String.valueOf(student_Id)});
         db.close(); // Closing database connection
     }
 
@@ -42,18 +45,22 @@ public class StudentRepo {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(Student.KEY_age, student.age);
-        values.put(Student.KEY_email,student.email);
+        /*values.put(Student.KEY_age, student.age);
+        values.put(Student.KEY_email,student.email);*/
         values.put(Student.KEY_name, student.name);
+        values.put(Student.KEY_admin, student.admin);
+        values.put(Student.KEY_username, student.username);
+        values.put(Student.KEY_password, student.password);
+        values.put(Student.KEY_PT, student.pt);
 
         // It's a good practice to use parameter ?, instead of concatenate string
-        db.update(Student.TABLE, values, Student.KEY_ID + "= ?", new String[] { String.valueOf(student.student_ID) });
+        db.update(Student.TABLE, values, Student.KEY_ID + "= ?", new String[]{String.valueOf(student.student_ID)});
         db.close(); // Closing database connection
     }
 
-    public ArrayList<HashMap<String, String>>  getStudentList() {
+   /* public ArrayList<HashMap<String, String>>  getStudentList() {
         //Open connection to read only
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 Student.KEY_ID + "," +
                 Student.KEY_name + "," +
@@ -81,15 +88,17 @@ public class StudentRepo {
         db.close();
         return studentList;
 
-    }
+    }*/
 
     public Student getStudentById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 Student.KEY_ID + "," +
                 Student.KEY_name + "," +
-                Student.KEY_email + "," +
-                Student.KEY_age +
+                Student.KEY_username + "," +
+                Student.KEY_password + "," +
+                Student.KEY_PT + "," +
+                Student.KEY_admin + "," +
                 " FROM " + Student.TABLE
                 + " WHERE " +
                 Student.KEY_ID + "=?";// It's a good practice to use parameter ?, instead of concatenate string
@@ -103,8 +112,10 @@ public class StudentRepo {
             do {
                 student.student_ID =cursor.getInt(cursor.getColumnIndex(Student.KEY_ID));
                 student.name =cursor.getString(cursor.getColumnIndex(Student.KEY_name));
-                student.email  =cursor.getString(cursor.getColumnIndex(Student.KEY_email));
-                student.age =cursor.getInt(cursor.getColumnIndex(Student.KEY_age));
+                student.username  =cursor.getString(cursor.getColumnIndex(Student.KEY_username));
+                student.password =cursor.getString(cursor.getColumnIndex(Student.KEY_password));
+                student.pt =cursor.getString(cursor.getColumnIndex(Student.KEY_PT));
+                student.admin =cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
 
             } while (cursor.moveToNext());
         }
@@ -114,4 +125,74 @@ public class StudentRepo {
         return student;
     }
 
+    public boolean alreadyExists(Student student) throws SQLiteException{
+        int count=-1;
+        Cursor c=null;
+        boolean alreadyExists=true;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+
+        try {
+
+            String selectQuery = "SELECT  " +
+                    Student.KEY_username +
+                    " FROM " + Student.TABLE
+                    + " WHERE " +
+                    Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
+
+
+            c = db.rawQuery(selectQuery, new String[]{student.username});
+
+            if(c.moveToFirst()){
+                alreadyExists=true;
+            }
+            else{
+                alreadyExists=false;
+            }
+
+        }
+        catch(SQLiteException sqlException){
+            sqlException.printStackTrace();
+        }
+        finally{
+
+            if(c!=null){
+                c.close();
+            }
+            return alreadyExists;
+        }
+    }
+    public String getPasswordOfUser(Student student) throws SQLiteException {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String value = "";
+
+
+        String selectQuery = "SELECT  " +
+                Student.KEY_username + "," +
+                Student.KEY_name + "," +
+                Student.KEY_password +
+                " FROM " + Student.TABLE
+                + " WHERE " +
+                Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
+
+        Cursor cursor;
+        try {
+            cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(student.username)});
+            if (cursor.moveToFirst()) {
+                String password = cursor.getString(cursor.getColumnIndex(Student.KEY_password));
+                cursor.close();
+                Log.d("password found:", password);
+                value = password;
+            } else {
+                value="";
+                cursor.close();
+
+            }
+
+            return value;
+        } catch (SQLiteException exception) {
+            exception.printStackTrace();
+        }
+        return value;
+    }
 }

@@ -11,7 +11,7 @@ public class DBHelper  extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 4;
 
     // Database Name
-    private static final String DATABASE_NAME = "crud.db";
+    private static final String DATABASE_NAME = "SmartWalker.db";
 
     public DBHelper(Context context ) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,8 +24,10 @@ public class DBHelper  extends SQLiteOpenHelper {
         String CREATE_TABLE_STUDENT = "CREATE TABLE " + Student.TABLE  + "("
                 + Student.KEY_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
                 + Student.KEY_name + " TEXT, "
-                + Student.KEY_age + " INTEGER, "
-                + Student.KEY_email + " TEXT )";
+                + Student.KEY_username + " TEXT, "
+                + Student.KEY_PT + " TEXT, "
+                + Student.KEY_admin + " TEXT, "
+                + Student.KEY_password + " TEXT )";
 
 
 
@@ -42,5 +44,7 @@ public class DBHelper  extends SQLiteOpenHelper {
         onCreate(db);
 
     }
+
+
 
 }

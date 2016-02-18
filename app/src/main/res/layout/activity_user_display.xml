@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    android:layout_width="match_parent"
+    android:weightSum="1">
+
+
+    <TextView
+        android:layout_width="214dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Username Placeholder"
+        android:id="@+id/textView"
+        android:layout_weight="0.05" />
+
+    <Button
+        android:layout_width="166dp"
+        android:layout_height="wrap_content"
+        android:text="Details"
+        android:id="@+id/button"
+        android:layout_gravity="right|bottom"
+        android:layout_weight="0.05"
+        android:layout_above="@+id/button2"
+        android:layout_alignEnd="@+id/button2" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView3"
+        android:layout_gravity="right|center_vertical" />
+
+    <Button
+        android:layout_width="169dp"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:id="@+id/button2"
+        android:layout_gravity="right|center_vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/imageView"
+        android:layout_marginBottom="68dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/rsz_original_315969_yo5b7fv5sjb40kbqiahwyzzsd"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:src="@drawable/left_arrow"
+        android:layout_above="@+id/button"
+        android:layout_alignEnd="@+id/textView" />
+        android:layout_toEndOf="@+id/imageView3" />
+</RelativeLayout>
