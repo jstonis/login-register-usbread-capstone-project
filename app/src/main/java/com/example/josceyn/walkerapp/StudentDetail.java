@@ -18,6 +18,7 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
     EditText editTextName;
     EditText editTextEmail;
     EditText editTextAge;*/
+   public static String EXTRA_MESSAGE="";
     private int _Student_Id=0;
 
     Button bRegister, btnClose;
@@ -104,6 +105,7 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
                             .show();
                     dialog.dismiss();
                     Intent main = new Intent(StudentDetail.this, UserDisplay.class);
+                    EXTRA_MESSAGE=student.name;
                     startActivity(main);
                 }
                 else

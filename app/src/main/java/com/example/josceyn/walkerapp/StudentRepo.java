@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 public class StudentRepo {
     private DBHelper dbHelper;
@@ -162,7 +161,7 @@ public class StudentRepo {
             return alreadyExists;
         }
     }
-    public String getPasswordOfUser(Student student) throws SQLiteException {
+    public Student getPasswordOfUser(Student student) throws SQLiteException {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String value = "";
 
@@ -179,20 +178,19 @@ public class StudentRepo {
         try {
             cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(student.username)});
             if (cursor.moveToFirst()) {
-                String password = cursor.getString(cursor.getColumnIndex(Student.KEY_password));
+                student.username = cursor.getString(cursor.getColumnIndex(Student.KEY_username));
+                student.password=cursor.getString(cursor.getColumnIndex(Student.KEY_password));
+                student.name=cursor.getString(cursor.getColumnIndex(Student.KEY_name));
                 cursor.close();
-                Log.d("password found:", password);
-                value = password;
+
             } else {
-                value="";
                 cursor.close();
 
             }
 
-            return value;
         } catch (SQLiteException exception) {
             exception.printStackTrace();
         }
-        return value;
+        return student;
     }
 }

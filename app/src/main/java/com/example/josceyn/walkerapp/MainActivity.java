@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,15 +14,15 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements android.view.View.OnClickListener {
 
-    Button btnAdd,btnGetAll,bLogin, tvRegisterLink;
-    TextView student_Id;
+    Button btnAdd,btnGetAll,bLogin;
+    TextView student_Id, tvRegisterLink;
     EditText etUsername, etPassword;
-
-
+    Student student;
 
     @Override
     public void onClick(View view) {
         Dialog dialog = new Dialog(MainActivity.this);
+        student=new Student();
 
         if (view== findViewById(R.id.tvRegisterLink)){
 
@@ -40,7 +39,8 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
                         "Congrats: Login Successfull", Toast.LENGTH_LONG)
                         .show();
                 dialog.dismiss();
-                Intent main = new Intent(MainActivity.this, UserDisplay.class);
+                Intent main = new Intent(getApplicationContext(), UserDisplay.class);
+                main.putExtra("EXTRA_MESSAGE",student.name);
                 startActivity(main);
             } else {
                 Toast.makeText(MainActivity.this,
@@ -84,7 +84,7 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
         etPassword=(EditText) findViewById(R.id.etPassword);
 
         bLogin=(Button) findViewById(R.id.bLogin);
-        tvRegisterLink=(Button) findViewById(R.id.tvRegisterLink);
+        tvRegisterLink=(TextView) findViewById(R.id.tvRegisterLink);
 
         tvRegisterLink.setOnClickListener(this);
         bLogin.setOnClickListener(this);
@@ -99,12 +99,11 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
 
     public String getPasswordOfUser(){
         StudentRepo studentRepo=new StudentRepo(this);
-        Student student=new Student();
         student.username=etUsername.getText().toString();
         student.password=etPassword.getText().toString();
-        Log.d("username: ", student.username);
-        Log.d("password: ", student.password);
-        return studentRepo.getPasswordOfUser(student);
+
+
+        return studentRepo.getPasswordOfUser(student).password;
 
     }
 
