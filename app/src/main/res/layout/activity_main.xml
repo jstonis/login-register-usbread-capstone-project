@@ -30,7 +30,8 @@
             android:layout_width="fill_parent"
             android:layout_height="90dip"
             android:background="@layout/footer_repeat"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/linearLayout">
         </LinearLayout>
         <!-- Footer Ends -->
 
@@ -41,7 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dip"
-            android:layout_below="@id/header">
+            android:layout_below="@id/header"
+            android:id="@+id/linearLayout">
             <!--  Login Label -->
             <TextView android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
