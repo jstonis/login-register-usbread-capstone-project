@@ -68,10 +68,19 @@
 
         <ImageButton
             android:layout_width="169dp"
-            android:layout_height="45dp"
+            android:layout_height="120dp"
             android:id="@+id/imageButton"
             android:layout_below="@+id/header"
-            android:layout_alignStart="@+id/button" />
+            android:layout_alignStart="@+id/button"
+            android:src="@drawable/dropbox_logo"
+            android:layout_alignEnd="@+id/button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send to Dropbox"
+            android:layout_toEndOf="@+id/imageView"
+            android:layout_below="@+id/imageButton" />
 
     </RelativeLayout>
 </ScrollView>

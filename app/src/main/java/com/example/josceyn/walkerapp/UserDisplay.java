@@ -10,6 +10,8 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -19,9 +21,10 @@ import com.hoho.android.usbserial.driver.UsbSerialProber;
 import java.io.IOException;
 import java.util.List;
 
-public class UserDisplay extends Activity{
+public class UserDisplay extends Activity implements View.OnClickListener{
 
     TextView name,userName;
+    Button bLogout, bDetails;
     Student student;
     PendingIntent mPermissionIntent;
     private static final String ACTION_USB_PERMISSION="com.example.josceyn.walkerapp.USB_PERMISSION";
@@ -37,6 +40,11 @@ public class UserDisplay extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_display);
         userName=(TextView) findViewById(R.id.userName);
+        bDetails=(Button) findViewById(R.id.bDetails);
+        bLogout=(Button) findViewById(R.id.bLogout);
+        bDetails.setOnClickListener(this);
+        bLogout.setOnClickListener(this);
+
 
         Intent intent=getIntent();
         userName.setText(intent.getStringExtra("user_name"));
@@ -92,6 +100,19 @@ public class UserDisplay extends Activity{
                         .setAction("Action", null).show();*/
            /* }
         });*/
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v==findViewById(R.id.bDetails)){
+            Intent intent=new Intent(this,UserGraph.class);
+            startActivity(intent);
+        }
+        else{
+            Intent intent=new Intent(this,MainActivity.class);
+            startActivity(intent);
+        }
+
     }
    /* public void checkDeviceInfo(){
         manager=(UsbManager)getSystemService(Context.USB_SERVICE);
