@@ -3,23 +3,15 @@ package com.example.josceyn.walkerapp;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.hoho.android.usbserial.driver.UsbSerialDriver;
-import com.hoho.android.usbserial.driver.UsbSerialPort;
-import com.hoho.android.usbserial.driver.UsbSerialProber;
-
-import java.io.IOException;
-import java.util.List;
 
 public class UserDisplay extends Activity implements View.OnClickListener{
 
@@ -31,9 +23,42 @@ public class UserDisplay extends Activity implements View.OnClickListener{
     UsbDevice device;
     UsbManager manager;
 
+
    /* public UserDisplay(Student student){
         this.student=student;
     }*/
+
+
+   // private final String TAG = DeviceListActivity.class.getSimpleName();
+
+    private UsbManager mUsbManager;
+    private ListView mListView;
+    private TextView mProgressBarTitle;
+    private ProgressBar mProgressBar;
+
+  /*  private static final int MESSAGE_REFRESH = 101;
+    private static final long REFRESH_TIMEOUT_MILLIS = 5000;
+
+    private final Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_REFRESH:
+                    refreshDeviceList();
+                    mHandler.sendEmptyMessageDelayed(MESSAGE_REFRESH, REFRESH_TIMEOUT_MILLIS);
+                    break;
+                default:
+                    super.handleMessage(msg);
+                    break;
+            }
+        }
+
+    };
+
+    private List<UsbSerialPort> mEntries = new ArrayList<UsbSerialPort>();
+    private ArrayAdapter<UsbSerialPort> mAdapter;*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +75,9 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         userName.setText(intent.getStringExtra("user_name"));
 
 
-        // Find all available drivers from attached devices.
+        Intent intent2=new Intent(this,DeviceListActivity.class);
+        startActivity(intent2);
+        /*// Find all available drivers from attached devices.
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
         if (availableDrivers.isEmpty()) {
@@ -82,7 +109,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
             // Deal with error.
         } finally {
 
-        }
+        }*/
 
 
 

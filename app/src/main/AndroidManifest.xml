@@ -63,6 +63,20 @@
             android:name=".AdminGraph"
             android:label="@string/title_activity_admin_graph"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity
+            android:name=".DeviceListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </activity>            <!--android:label="@string/title_serial_console"-->
+
     </application>
 
 </manifest>
