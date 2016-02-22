@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\Users\\Josceyn\\AndroidStudioProjects\\LoginRegister2\\usbSerialExamples\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\main.xml",
+        "source": "C:\\Users\\Josceyn\\AndroidStudioProjects\\LoginRegister2\\usbSerialExamples\\build\\intermediates\\bundles\\debug\\res\\layout\\main.xml"
+    },
+    {
+        "merged": "C:\\Users\\Josceyn\\AndroidStudioProjects\\LoginRegister2\\usbSerialExamples\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\serial_console.xml",
+        "source": "C:\\Users\\Josceyn\\AndroidStudioProjects\\LoginRegister2\\usbSerialExamples\\build\\intermediates\\bundles\\debug\\res\\layout\\serial_console.xml"
+    }
+]

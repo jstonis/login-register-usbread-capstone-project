@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class StudentRepo {
     private DBHelper dbHelper;
 
@@ -57,27 +60,28 @@ public class StudentRepo {
         db.close(); // Closing database connection
     }
 
-   /* public ArrayList<HashMap<String, String>>  getStudentList() {
+    public ArrayList<HashMap<String, String>> getStudentList(String ptName) {
         //Open connection to read only
+        SQLiteDatabase db;
         db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
-                Student.KEY_ID + "," +
                 Student.KEY_name + "," +
-                Student.KEY_email + "," +
-                Student.KEY_age +
-                " FROM " + Student.TABLE;
+                Student.KEY_username +
+                " FROM " + Student.TABLE
+                + " WHERE " +
+                Student.KEY_PT + "=?";// It's a good practice to use parameter ?, instead of concatenate string
 
         //Student student = new Student();
         ArrayList<HashMap<String, String>> studentList = new ArrayList<HashMap<String, String>>();
 
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { ptName });
         // looping through all rows and adding to list
 
         if (cursor.moveToFirst()) {
             do {
                 HashMap<String, String> student = new HashMap<String, String>();
-                student.put("id", cursor.getString(cursor.getColumnIndex(Student.KEY_ID)));
                 student.put("name", cursor.getString(cursor.getColumnIndex(Student.KEY_name)));
+                student.put("username", cursor.getString(cursor.getColumnIndex(Student.KEY_username)));
                 studentList.add(student);
 
             } while (cursor.moveToNext());
@@ -87,7 +91,7 @@ public class StudentRepo {
         db.close();
         return studentList;
 
-    }*/
+    }
 
     public Student getStudentById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -123,6 +127,43 @@ public class StudentRepo {
         db.close();
         return student;
     }
+
+    public Student getStudentByUsername(String username){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT  " +
+                Student.KEY_ID + "," +
+                Student.KEY_name + "," +
+                Student.KEY_username + "," +
+                Student.KEY_password + "," +
+                Student.KEY_PT + "," +
+                Student.KEY_admin +
+                " FROM " + Student.TABLE
+                + " WHERE " +
+                Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
+
+        int iCount =0;
+        Student student = new Student();
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { username } );
+
+        if (cursor.moveToFirst()) {
+            do {
+                student.student_ID =cursor.getInt(cursor.getColumnIndex(Student.KEY_ID));
+                student.name =cursor.getString(cursor.getColumnIndex(Student.KEY_name));
+                student.username  =cursor.getString(cursor.getColumnIndex(Student.KEY_username));
+                student.password =cursor.getString(cursor.getColumnIndex(Student.KEY_password));
+                student.pt =cursor.getString(cursor.getColumnIndex(Student.KEY_PT));
+                student.admin =cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return student;
+    }
+
+
 
     public boolean alreadyExists(Student student) throws SQLiteException{
         int count=-1;
@@ -169,6 +210,8 @@ public class StudentRepo {
         String selectQuery = "SELECT  " +
                 Student.KEY_username + "," +
                 Student.KEY_name + "," +
+                Student.KEY_PT + "," +
+                Student.KEY_admin + "," +
                 Student.KEY_password +
                 " FROM " + Student.TABLE
                 + " WHERE " +
@@ -181,6 +224,8 @@ public class StudentRepo {
                 student.username = cursor.getString(cursor.getColumnIndex(Student.KEY_username));
                 student.password=cursor.getString(cursor.getColumnIndex(Student.KEY_password));
                 student.name=cursor.getString(cursor.getColumnIndex(Student.KEY_name));
+                student.admin=cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
+                student.pt=cursor.getString(cursor.getColumnIndex(Student.KEY_admin));
                 cursor.close();
 
             } else {
@@ -193,4 +238,7 @@ public class StudentRepo {
         }
         return student;
     }
+
+
+
 }

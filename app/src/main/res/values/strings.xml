@@ -5,4 +5,6 @@
     <string name="title_activity_user_display">UserDisplay</string>
     <string name="title_activity_user_graph">UserGraph</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_admin_view">AdminView</string>
+    <string name="title_activity_admin_graph">AdminGraph</string>
 </resources>

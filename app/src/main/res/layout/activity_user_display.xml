@@ -8,20 +8,47 @@
     android:layout_width="match_parent"
     android:weightSum="1">
 
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        
-        app:popupTheme="@style/ActionBarPopupThemeOverlay"</android.support.v7.widget.Toolbar>
 
 
+    <!--  Header  Starts-->
+    <LinearLayout android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:background="@layout/header_gradient"
+        android:paddingTop="5dip"
+        android:paddingBottom="5dip">
+        <!-- Logo Start-->
+        <ImageView android:src="@drawable/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:paddingTop="20dp"/>
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="end|center"
+            android:text="User's Name"
+            android:textSize="25dp"
+            android:paddingTop="60dp"/>
+
+        <!-- Logo Ends -->
+    </LinearLayout>
+    <!--  Header Ends -->
     <TextView
-        android:layout_width="214dp"
+        android:layout_width="166dp"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Username Placeholder"
-        android:id="@+id/name"
-        android:layout_weight="0.05" />
+        android:text="RIGHT SIDE READING"
+        android:layout_gravity="right|bottom"
+        android:layout_weight="0.05"
+        android:layout_above="@+id/button"
+        android:paddingBottom="100dp"
+        android:layout_alignEnd="@+id/button"
+        android:id="@+id/textView2"
+        android:background="@layout/outline"/>
+
 
     <Button
         android:layout_width="166dp"
@@ -32,12 +59,6 @@
         android:layout_weight="0.05"
         android:layout_above="@+id/button2"
         android:layout_alignEnd="@+id/button2" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView3"
-        android:layout_gravity="right|center_vertical" />
 
     <Button
         android:layout_width="169dp"
@@ -54,15 +75,21 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:src="@drawable/rsz_original_315969_yo5b7fv5sjb40kbqiahwyzzsd"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/header" />
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="166dp"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:src="@drawable/left_arrow"
-        android:layout_above="@+id/button"
-        android:layout_alignEnd="@+id/textView" />
-        android:layout_toEndOf="@+id/imageView3" />
+        android:text="LEFT SIDE READING"
+        android:layout_gravity="right|bottom"
+        android:layout_weight="0.05"
+        android:paddingBottom="100dp"
+        android:id="@+id/textView"
+        android:layout_alignTop="@+id/textView2"
+        android:layout_alignEnd="@+id/imageView"
+        android:layout_marginEnd="568dp"
+        android:background="@layout/outline"/>
+
+
 </RelativeLayout>

@@ -72,7 +72,7 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
         etPassword.setText(student.password);
         etName.setText(student.name);
         etPhysicalTherapist.setText(student.pt);
-        if(student.admin==0){etAdmin.setChecked(true);}else{etAdmin.setChecked(false);}
+        if(student.admin==0){etAdmin.setChecked(false);}else{etAdmin.setChecked(true);}
 
     }
 
@@ -90,8 +90,15 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
             student.username=etUsername.getText().toString();
             student.password=etPassword.getText().toString();
             student.pt=etPhysicalTherapist.getText().toString();
-            if(student.admin==0){etAdmin.setChecked(true);}else{etAdmin.setChecked(false);}
+           // if(student.admin==0){etAdmin.setChecked(false);}else{etAdmin.setChecked(true);}
 
+            if(etAdmin.isChecked()==true){
+                student.admin=1;
+            }
+            else
+            {
+                student.admin=0;
+            }
             student.student_ID=_Student_Id;
 
 //            if (_Student_Id==0){
@@ -104,7 +111,7 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
                             "Registration Complete! Login to Continue: ", Toast.LENGTH_LONG)
                             .show();
                     dialog.dismiss();
-                    Intent main = new Intent(StudentDetail.this, UserDisplay.class);
+                    Intent main = new Intent(StudentDetail.this, MainActivity.class);
                     EXTRA_MESSAGE=student.name;
                     startActivity(main);
                 }

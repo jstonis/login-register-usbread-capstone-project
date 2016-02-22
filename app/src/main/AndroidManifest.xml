@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.josceyn.walkerapp">
 
+    <uses-feature android:name="android.hardware.usb.host" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +19,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+
+            <!--
+                <meta-data android:name="android.hardware.usb.action.USB._DEVICE_ATTACHED"
+                android:resource="@values/device_filter"/>
+            -->
+
 
             <!--
             <intent-filter>
@@ -40,6 +55,14 @@
             android:name=".UserGraph"
             android:label="@string/title_activity_user_graph"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AdminView"
+            android:label="@string/title_activity_admin_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AdminGraph"
+            android:label="@string/title_activity_admin_graph"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

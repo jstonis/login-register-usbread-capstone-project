@@ -35,13 +35,18 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
         {
 
             if (etPassword.getText().toString().equals(getPasswordOfUser())){
-                Toast.makeText(MainActivity.this,
-                        "Congrats: Login Successfull", Toast.LENGTH_LONG)
-                        .show();
-                dialog.dismiss();
-                Intent main = new Intent(getApplicationContext(), UserDisplay.class);
-                main.putExtra("EXTRA_MESSAGE",student.name);
-                startActivity(main);
+                if(!isAdmin(student)) {
+                    Toast.makeText(MainActivity.this,
+                            "Congrats: Login Successfull", Toast.LENGTH_LONG)
+                            .show();
+                    dialog.dismiss();
+                    Intent main = new Intent(getApplicationContext(), UserDisplay.class);
+                    main.putExtra("user_name", student.name);
+                    startActivity(main);
+                }
+                else{
+                    displayAdminPage(student);
+                }
             } else {
                 Toast.makeText(MainActivity.this,
                         "User Name or Password does not match",
@@ -74,6 +79,12 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
 
         }*/
     }
+    public void displayAdminPage(Student student){
+
+        Intent intent = new Intent(this,AdminView.class);
+        intent.putExtra("username",student.username);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +115,14 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
 
 
         return studentRepo.getPasswordOfUser(student).password;
+
+    }
+
+    public boolean isAdmin(Student student){
+        if(student.admin==1){
+            return true;
+            }
+        return false;
 
     }
 
