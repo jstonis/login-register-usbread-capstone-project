@@ -29,17 +29,17 @@
             android:layout_width="166dp"
             android:layout_height="wrap_content"
             android:text="Submit"
-            android:id="@+id/button"
+            android:id="@+id/bSubmit"
             android:layout_gravity="right|bottom"
             android:layout_weight="0.05"
-            android:layout_above="@+id/button2"
-            android:layout_alignEnd="@+id/button2" />
+            android:layout_above="@+id/bLogout"
+            android:layout_alignEnd="@+id/bLogout" />
 
         <Button
             android:layout_width="169dp"
             android:layout_height="wrap_content"
             android:text="Logout"
-            android:id="@+id/button2"
+            android:id="@+id/bLogout"
             android:layout_gravity="right|center_vertical"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@+id/imageView"
@@ -58,9 +58,9 @@
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:text="This textbox allows the physical therapist to comment on their progress or ask any questions they may have"
-            android:id="@+id/textView3"
+            android:id="@+id/adminComment"
             android:layout_alignEnd="@+id/imageView"
-            android:layout_alignBottom="@+id/button2"
+            android:layout_alignBottom="@+id/bLogout"
             android:layout_alignStart="@+id/imageView"
             android:layout_below="@+id/imageView"
             android:background="@layout/outline"

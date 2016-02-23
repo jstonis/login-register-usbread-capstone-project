@@ -41,17 +41,17 @@ public class AdminView extends ListActivity implements android.view.View.OnClick
 
         //get list view
         //get list of users that list admin as their PT
-        ArrayList<HashMap<String, String>> studentList =  studentHelper.getStudentList(student.name);
+         final ArrayList<HashMap<String, String>> studentList =  studentHelper.getStudentList(student.name);
         if(studentList.size()!=0) {
-            ListView lv = getListView();
+            final ListView lv = getListView();
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-                    /*student_Id = (TextView) view.findViewById(R.id.student_Id);
-                    String studentId = student_Id.getText().toString();
-                    Intent objIndent = new Intent(getApplicationContext(),StudentDetail.class);
-                    objIndent.putExtra("student_Id", Integer.parseInt( studentId));
-                    startActivity(objIndent);*/
+                    String username=studentList.get(position).get("username").toString();
+
+                    Intent objIndent = new Intent(getApplicationContext(),AdminGraph.class);
+                    objIndent.putExtra("username", username);
+                    startActivity(objIndent);
                 }
             });
             // ListAdapter adapter = new SimpleAdapter( AdminView.this,studentList, R.layout.view_student_entry, new String[] { "id","name"}, new int[] {R.id.student_Id, R.id.student_name});
