@@ -27,6 +27,8 @@ public class StudentRepo {
         values.put(Student.KEY_name, student.name);
         values.put(Student.KEY_PT,student.pt);
         values.put(Student.KEY_admin, student.admin);
+        values.put(Student.KEY_comments, student.comments);
+        values.put(Student.KEY_usbdata, student.usbdata);
 
         // Inserting Row
         long student_Id = db.insert(Student.TABLE, null, values);
@@ -54,6 +56,8 @@ public class StudentRepo {
         values.put(Student.KEY_username, student.username);
         values.put(Student.KEY_password, student.password);
         values.put(Student.KEY_PT, student.pt);
+        values.put(Student.KEY_usbdata, student.usbdata);
+        values.put(Student.KEY_comments, student.comments);
 
         // It's a good practice to use parameter ?, instead of concatenate string
         db.update(Student.TABLE, values, Student.KEY_ID + "= ?", new String[]{String.valueOf(student.student_ID)});
@@ -238,6 +242,7 @@ public class StudentRepo {
         }
         return student;
     }
+
 
 
 

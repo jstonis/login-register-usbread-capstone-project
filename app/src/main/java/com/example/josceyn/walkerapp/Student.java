@@ -13,6 +13,8 @@ public class Student {
     public static final String KEY_PT="pt";
     public static final String KEY_admin="admin";
     public static final String KEY_age = "age";
+    public static final String KEY_comments="comments";
+    public static final String KEY_usbdata="usbdata";
 
     // property help us to keep data
     public int student_ID;
@@ -23,4 +25,6 @@ public class Student {
     public String pt;
     public int admin;
     public int age;
+    public String usbdata;
+    public String comments;
 }

@@ -66,5 +66,14 @@
             android:background="@layout/outline"
             android:textSize="25dp"/>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Previous Post"
+            android:id="@+id/edit"
+            android:layout_above="@+id/bSubmit"
+            android:layout_alignStart="@+id/bSubmit"
+            android:layout_alignEnd="@+id/bSubmit" />
+
     </RelativeLayout>
     </ScrollView>

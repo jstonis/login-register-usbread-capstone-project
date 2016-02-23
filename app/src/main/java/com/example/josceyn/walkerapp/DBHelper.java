@@ -27,6 +27,8 @@ public class DBHelper  extends SQLiteOpenHelper {
                 + Student.KEY_username + " TEXT, "
                 + Student.KEY_PT + " TEXT, "
                 + Student.KEY_admin + " TEXT, "
+                + Student.KEY_usbdata + " TEXT, "
+                + Student.KEY_comments + " TEXT, "
                 + Student.KEY_password + " TEXT )";
 
 
