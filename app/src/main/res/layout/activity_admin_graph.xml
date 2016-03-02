@@ -54,10 +54,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="69dp" />
 
-        <TextView
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="150dp"
-            android:text="This textbox allows the physical therapist to comment on their progress or ask any questions they may have"
             android:id="@+id/adminComment"
             android:layout_alignEnd="@+id/imageView"
             android:layout_alignBottom="@+id/bLogout"
@@ -70,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Edit Previous Post"
-            android:id="@+id/edit"
+            android:id="@+id/bEdit"
             android:layout_above="@+id/bSubmit"
             android:layout_alignStart="@+id/bSubmit"
             android:layout_alignEnd="@+id/bSubmit" />

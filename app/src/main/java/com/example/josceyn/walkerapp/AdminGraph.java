@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -18,11 +18,11 @@ import java.util.Date;
 
 public class AdminGraph extends Activity implements View.OnClickListener {
 
-    TextView adminComment;
-    Button bLogout, bSubmit;
+    EditText adminComment;
+    Button bLogout, bSubmit, bEdit;
     Student selectedUser;
-
     StudentRepo repo;
+    boolean newComment=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,77 +37,107 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
 
 
-        adminComment=(TextView) findViewById(R.id.adminComment);
+        adminComment=(EditText) findViewById(R.id.adminComment);
         bLogout=(Button) findViewById(R.id.bLogout);
         bSubmit=(Button) findViewById(R.id.bSubmit);
-
+        bEdit=(Button) findViewById(R.id.bEdit);
 
         bLogout.setOnClickListener(this);
         bSubmit.setOnClickListener(this);
-
+        bEdit.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View v) {
+        int position;
         //if logout, bring back to login page
         if(v==findViewById(R.id.bLogout)){
             Intent intent=new Intent(this,MainActivity.class);
             startActivity(intent);
         }
         else if(v==findViewById(R.id.bSubmit)){
-            if(adminComment.getText()!=""){
-                JSONObject json= null;
-                try {
-                    json = new JSONObject(selectedUser.comments.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
+
+            ArrayList comments=new ArrayList();
+
+                if (adminComment.getText().toString() != null) {
+
+                    JSONObject json = null;
+                    try {
+                       if(selectedUser.comments==null){
+                           selectedUser.comments="";
+                       }
+                        else {
+                           json = new JSONObject(selectedUser.comments.toString());
+                           comments = getArrayList(json.optJSONArray("comments"));
+                       }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    JSONObject json2=new JSONObject();
+                    if (newComment) {
+                        position = 0;
+                        comments.add(position, getCurrentTimeStamp() + ":" + adminComment.getText());
+
+                        try {
+                            json2.put("comments",new JSONArray(comments));
+                            //update selected user with comments
+                            selectedUser.comments = json2.toString();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        position = comments.size() - 1;
+                        comments.remove(position);
+                        comments.add(position, adminComment.getText());
+
+                        try {
+                            json2.put("comments",new JSONArray(comments));
+                            //update selected user with comments
+                            selectedUser.comments = json2.toString();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    //update database with new comments + timestamp
+                    repo.update(selectedUser);
+                    adminComment.setText("");
+                    confirmationDialog();
                 }
-                ArrayList comments=getArrayList(json.optJSONArray(selectedUser.comments));
-                comments.add(comments.size(),adminComment.getText());
-                //update selected user with comments
-                selectedUser.comments=comments.toString();
-                //update database with new comments + timestamp
-                repo.update(selectedUser);
-
-                //confirmation dialog
-                Toast.makeText(AdminGraph.this,
-                        "Comment submitted!",
-                        Toast.LENGTH_LONG).show();
-
-                adminComment.setText("");
-
-
-
-            }
-        }
+    }
         else
         {
-            if(adminComment.getText()!=""){
-                JSONObject json= null;
-                try {
-                    json = new JSONObject(selectedUser.comments.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                ArrayList comments=getArrayList(json.optJSONArray(selectedUser.comments));
-                comments.add(comments.size(),adminComment.getText());
-                //update selected user with comments
-                selectedUser.comments=comments.toString();
-                //update database with new comments + timestamp
-                repo.update(selectedUser);
-
-                //confirmation dialog
-                Toast.makeText(AdminGraph.this,
-                        "Comment edited!",
-                        Toast.LENGTH_LONG).show();
-
-                adminComment.setText("");
-
-
-
+            newComment=false;
+            String comm=selectedUser.comments;
+            if(selectedUser.comments==null){
+                noPreviousCommentsDialog();
+                return;
             }
+
+            JSONObject json= null;
+            try {
+                json = new JSONObject(selectedUser.comments.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ArrayList comments=getArrayList(json.optJSONArray("comments"));
+
+            adminComment.setText(comments.get(comments.size()-1).toString());
+
         }
+
+    }
+    public void noPreviousCommentsDialog(){
+        //confirmation dialog
+        Toast.makeText(AdminGraph.this,
+                "Comment submitted!",
+                Toast.LENGTH_LONG).show();
+
+        adminComment.setText("");
 
     }
 
@@ -140,5 +170,13 @@ public class AdminGraph extends Activity implements View.OnClickListener {
             e.printStackTrace();
             return null;
         }
+    }
+    public void confirmationDialog(){
+        //confirmation dialog
+        Toast.makeText(AdminGraph.this,
+                "Comment submitted!",
+                Toast.LENGTH_LONG).show();
+
+        adminComment.setText("");
     }
 }

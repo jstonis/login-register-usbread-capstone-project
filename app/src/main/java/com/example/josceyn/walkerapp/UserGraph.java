@@ -1,10 +1,16 @@
 package com.example.josceyn.walkerapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class UserGraph extends AppCompatActivity {
 
+    Button bLogout;
+    TextView adminComment;
+    Student user;
 /*
 GraphView graph=(GraphView)findViewById(R.id.graph);
     LineGraphSeries<DataPoint> series=new LineGraphSeries<DataPoint>(new DataPoint[] {
@@ -21,17 +27,16 @@ GraphView graph=(GraphView)findViewById(R.id.graph);
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_graph);
-       /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+        StudentRepo userRepo=new StudentRepo(this);
+        bLogout=(Button) findViewById(R.id.bLogout);
+        adminComment=(TextView) findViewById(R.id.adminComment);
+
+        Intent intent=getIntent();
+        String username=intent.getStringExtra("username");
+        user=userRepo.getStudentByUsername(username);
+
+        adminComment.setText(user.comments);
     }
 
 }

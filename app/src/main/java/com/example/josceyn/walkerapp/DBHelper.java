@@ -11,7 +11,7 @@ public class DBHelper  extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 4;
 
     // Database Name
-    private static final String DATABASE_NAME = "SmartWalker.db";
+    private static final String DATABASE_NAME = "SmartWalkerDB.db";
 
     public DBHelper(Context context ) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

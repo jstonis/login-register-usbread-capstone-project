@@ -64,6 +64,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_display);
+        StudentRepo userRepo=new StudentRepo(this);
         userName=(TextView) findViewById(R.id.userName);
         bDetails=(Button) findViewById(R.id.bDetails);
         bLogout=(Button) findViewById(R.id.bLogout);
@@ -73,10 +74,11 @@ public class UserDisplay extends Activity implements View.OnClickListener{
 
         Intent intent=getIntent();
         userName.setText(intent.getStringExtra("user_name"));
+        student=userRepo.getStudentByUsername(userName.getText().toString());
 
 
-        Intent intent2=new Intent(this,DeviceListActivity.class);
-        startActivity(intent2);
+       /* Intent intent2=new Intent(this,DeviceListActivity.class);
+        startActivity(intent2);*/
         /*// Find all available drivers from attached devices.
         UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
@@ -133,6 +135,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         if(v==findViewById(R.id.bDetails)){
             Intent intent=new Intent(this,UserGraph.class);
+            intent.putExtra("username", student.username);
             startActivity(intent);
         }
         else{

@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
                             .show();
                     dialog.dismiss();
                     Intent main = new Intent(getApplicationContext(), UserDisplay.class);
-                    main.putExtra("user_name", student.name);
+                    main.putExtra("user_name", student.username);
                     startActivity(main);
                 }
                 else{
@@ -112,6 +112,8 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
         StudentRepo studentRepo=new StudentRepo(this);
         student.username=etUsername.getText().toString();
         student.password=etPassword.getText().toString();
+        student.admin=studentRepo.getStudentByUsername(student.username).admin;
+
 
 
         return studentRepo.getPasswordOfUser(student).password;

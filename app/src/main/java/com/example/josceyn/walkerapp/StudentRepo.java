@@ -140,7 +140,9 @@ public class StudentRepo {
                 Student.KEY_username + "," +
                 Student.KEY_password + "," +
                 Student.KEY_PT + "," +
-                Student.KEY_admin +
+                Student.KEY_admin + "," +
+                Student.KEY_comments + "," +
+                Student.KEY_usbdata +
                 " FROM " + Student.TABLE
                 + " WHERE " +
                 Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
@@ -216,6 +218,8 @@ public class StudentRepo {
                 Student.KEY_name + "," +
                 Student.KEY_PT + "," +
                 Student.KEY_admin + "," +
+                Student.KEY_comments + "," +
+                Student.KEY_usbdata + "," +
                 Student.KEY_password +
                 " FROM " + Student.TABLE
                 + " WHERE " +
