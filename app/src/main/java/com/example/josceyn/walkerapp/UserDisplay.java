@@ -1,28 +1,44 @@
 package com.example.josceyn.walkerapp;
 
-
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.felhr.usbserial.UsbSerialDevice;
+import com.felhr.usbserial.UsbSerialInterface;
+
+import org.w3c.dom.Text;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class UserDisplay extends Activity implements View.OnClickListener{
 
-    TextView name,userName;
+    public final String ACTION_USB_PERMISSION = "com.example.josceyn.walkerapp.USB_PERMISSION";
+    TextView name,userName, leftReading, rightReading;
     Button bLogout, bDetails;
     Student student;
     PendingIntent mPermissionIntent;
-    private static final String ACTION_USB_PERMISSION="com.example.josceyn.walkerapp.USB_PERMISSION";
+    UsbManager usbManager;
     UsbDevice device;
-    UsbManager manager;
-
+    UsbSerialDevice serialPort;
+    UsbDeviceConnection connection;
 
    /* public UserDisplay(Student student){
         this.student=student;
@@ -36,29 +52,116 @@ public class UserDisplay extends Activity implements View.OnClickListener{
     private TextView mProgressBarTitle;
     private ProgressBar mProgressBar;
 
-  /*  private static final int MESSAGE_REFRESH = 101;
-    private static final long REFRESH_TIMEOUT_MILLIS = 5000;
-
-    private final Handler mHandler = new Handler() {
-
+    UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() { //Defining a Callback which triggers whenever data is read.
         @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MESSAGE_REFRESH:
-                    refreshDeviceList();
-                    mHandler.sendEmptyMessageDelayed(MESSAGE_REFRESH, REFRESH_TIMEOUT_MILLIS);
-                    break;
-                default:
-                    super.handleMessage(msg);
-                    break;
+        public void onReceivedData(byte[] arg0) {
+            String data = null;
+            try {
+                data = new String(arg0, "UTF-8");
+                data.concat("/n");
+
+                final TextView ftv = leftReading;
+                final TextView ftv1= rightReading;
+                final CharSequence ftextLEFT;
+                final CharSequence ftextRIGHT;
+                CharSequence ftext1="";
+                CharSequence ftext2="";
+
+
+                if(data.contains("A") && !data.contains("SUM")){
+                    if(data.indexOf("S")!=-1) {
+                        ftext1 = data.substring(data.indexOf("S") + 3);
+                    }
+                    else{
+                        ftext1="";
+                    }
+
+                }
+                else if(data.contains("B") && !data.contains("SUM")){
+                    if(data.indexOf("S")!=-1) {
+                        ftext2 = data.substring(data.indexOf("S") + 3);
+                    }
+                    else{
+                        ftext2="";
+                    }
+
+                }
+                else{
+                    ftext1="not working";
+                    ftext2="not working";
+                }
+
+
+                ftextLEFT=ftext1;
+                ftextRIGHT=ftext2;
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ftv.setText(ftextLEFT);
+                        ftv1.setText(ftextRIGHT);
+                    }
+                });
+
+              //  tvAppend(textView, data);
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    };
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { //Broadcast Receiver to automatically start and stop the Serial connection.
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_USB_PERMISSION)) {
+                boolean granted = intent.getExtras().getBoolean(UsbManager.EXTRA_PERMISSION_GRANTED);
+                if (granted) {
+                    connection = usbManager.openDevice(device);
+                    serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
+                    if (serialPort != null) {
+                        if (serialPort.open()) { //Set Serial Connection Parameters.
+                            serialPort.setBaudRate(9600);
+                            serialPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
+                            serialPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
+                            serialPort.setParity(UsbSerialInterface.PARITY_NONE);
+                            serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);
+                            serialPort.read(mCallback);
+
+
+                            final TextView ftv = leftReading;
+                            final TextView ftv1= rightReading;
+                            final CharSequence ftext = "connection opened";
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ftv.setText(ftext);
+                                    ftv1.setText(ftext);
+                                }
+                            });
+                            //tvAppend(textView,"Serial Connection Opened!\n");
+
+                        } else {
+                            Log.d("SERIAL", "PORT NOT OPEN");
+                        }
+                    } else {
+                        Log.d("SERIAL", "PORT IS NULL");
+                    }
+                } else {
+                    Log.d("SERIAL", "PERM NOT GRANTED");
+                }
+            } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+                onUSBStart();
+            } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                onUSBStop();
+
             }
         }
 
+        ;
     };
-
-    private List<UsbSerialPort> mEntries = new ArrayList<UsbSerialPort>();
-    private ArrayAdapter<UsbSerialPort> mAdapter;*/
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +171,22 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         userName=(TextView) findViewById(R.id.userName);
         bDetails=(Button) findViewById(R.id.bDetails);
         bLogout=(Button) findViewById(R.id.bLogout);
+        leftReading=(TextView) findViewById(R.id.leftReading);
+        rightReading=(TextView) findViewById(R.id.rightReading);
         bDetails.setOnClickListener(this);
         bLogout.setOnClickListener(this);
 
-
+        usbManager = (UsbManager) getSystemService(this.USB_SERVICE);
         Intent intent=getIntent();
         userName.setText(intent.getStringExtra("user_name"));
         student=userRepo.getStudentByUsername(userName.getText().toString());
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_USB_PERMISSION);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        registerReceiver(broadcastReceiver, filter);
+        onUSBStart();
 
        /* Intent intent2=new Intent(this,DeviceListActivity.class);
         startActivity(intent2);*/
@@ -131,6 +242,50 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         });*/
     }
 
+    public void onUSBStart() {
+
+        HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
+        if (!usbDevices.isEmpty()) {
+            boolean keep = true;
+            for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
+                device = entry.getValue();
+                int deviceVID = device.getVendorId();
+                if (deviceVID == 0x2341)//Arduino Vendor ID
+                {
+                    PendingIntent pi = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    usbManager.requestPermission(device, pi);
+                    keep = false;
+                } else {
+                    connection = null;
+                    device = null;
+                }
+
+                if (!keep)
+                    break;
+            }
+        }
+
+
+    }
+
+    public void onUSBStop() {
+        serialPort.close();
+       // tvAppend(textView,"\nSerial Connection Closed! \n");
+    }
+
+    private void tvAppend(TextView tv, CharSequence text) {
+        final TextView ftv = tv;
+        final CharSequence ftext = text;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ftv.append(ftext);
+            }
+        });
+    }
+
+
     @Override
     public void onClick(View v) {
         if(v==findViewById(R.id.bDetails)){
@@ -144,33 +299,4 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         }
 
     }
-   /* public void checkDeviceInfo(){
-        manager=(UsbManager)getSystemService(Context.USB_SERVICE);
-
-
-        mPermissionIntent=PendingIntent.getBroadcast(this,0,new Intent(ACTION_USB_PERMISSION),0);
-        IntentFilter filter=new IntentFilter(ACTION_USB_PERMISSION);
-        registerReceiver(mUsbReceiver,filter);
-
-    }
-    private final BroadcastReceiver mUsbReceiver=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action=intent.getAction();
-            if(ACTION_USB_PERMISSION.equals(action)){
-                synchronized (this){
-                    UsbDevice device=(UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if(intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED,false)){
-                        if(device!=null){
-                            //call method to set up device
-                        }
-                    }
-                    else{
-                        Log.d("Tag", "permission denied for device " + device);
-                    }
-                }
-            }
-        }
-    };*/
-
 }
