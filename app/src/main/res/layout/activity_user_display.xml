@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:text="LEFT SIDE READING"
         android:layout_gravity="right|bottom"
-        android:layout_weight="0.05"
+        android:layout_weight="1"
         android:paddingBottom="100dp"
         android:id="@+id/leftReading"
         android:background="@layout/outline"

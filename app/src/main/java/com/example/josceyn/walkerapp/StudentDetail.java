@@ -21,7 +21,7 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
    public static String EXTRA_MESSAGE="";
     private int _Student_Id=0;
 
-    Button bRegister, btnClose;
+    Button bRegister, btnClose, btnBack;
     EditText etUsername, etPassword, etName, etPhysicalTherapist;
     CheckBox etAdmin;
 
@@ -37,7 +37,7 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
 
         btnClose=(Button) findViewById(R.id.btnClose);
         bRegister=(Button) findViewById(R.id.bRegister);
-
+        btnBack=(Button) findViewById(R.id.btnBack);
 
         etUsername=(EditText) findViewById(R.id.etUsername);
         etName=(EditText) findViewById(R.id.etName);
@@ -51,6 +51,7 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
 
         btnClose.setOnClickListener(this);
         bRegister.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
 
        /* btnSave.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
@@ -79,6 +80,12 @@ public class StudentDetail extends ActionBarActivity implements android.view.Vie
 
 
     public void onClick(View view) {
+
+        //go back
+
+        Button button=(Button) view;
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
         if (view == findViewById(R.id.bRegister)){
             StudentRepo repo = new StudentRepo(this);
             Student student = new Student();

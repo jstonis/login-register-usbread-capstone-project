@@ -74,5 +74,16 @@
             android:layout_alignStart="@+id/bSubmit"
             android:layout_alignEnd="@+id/bSubmit" />
 
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:id="@+id/btnBack"
+            android:layout_alignBaseline="@+id/bLogout"
+            android:layout_alignBottom="@+id/bLogout"
+            android:layout_toStartOf="@+id/adminComment"
+            android:layout_marginEnd="69dp" />
+
     </RelativeLayout>
     </ScrollView>

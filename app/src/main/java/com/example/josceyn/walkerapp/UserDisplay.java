@@ -60,7 +60,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                 data = new String(arg0, "UTF-8");
                 data.concat("/n");
 
-                final TextView ftv = leftReading;
+               /* final TextView ftv = leftReading;
                 final TextView ftv1= rightReading;
                 final CharSequence ftextLEFT;
                 final CharSequence ftextRIGHT;
@@ -91,19 +91,13 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                     ftext2="not working";
                 }
 
+*/
+              /*  ftextLEFT=ftext1;
+                ftextRIGHT=ftext2;*/
 
-                ftextLEFT=ftext1;
-                ftextRIGHT=ftext2;
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ftv.setText(ftextLEFT);
-                        ftv1.setText(ftextRIGHT);
-                    }
-                });
 
-              //  tvAppend(textView, data);
+                tvAppend(leftReading, data);
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -130,7 +124,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                             serialPort.read(mCallback);
 
 
-                            final TextView ftv = leftReading;
+                           /* final TextView ftv = leftReading;
                             final TextView ftv1= rightReading;
                             final CharSequence ftext = "connection opened";
 
@@ -140,8 +134,8 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                                     ftv.setText(ftext);
                                     ftv1.setText(ftext);
                                 }
-                            });
-                            //tvAppend(textView,"Serial Connection Opened!\n");
+                            });*/
+                            tvAppend(leftReading,"Serial Connection Opened!\n");
 
                         } else {
                             Log.d("SERIAL", "PORT NOT OPEN");
@@ -270,7 +264,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
 
     public void onUSBStop() {
         serialPort.close();
-       // tvAppend(textView,"\nSerial Connection Closed! \n");
+        tvAppend(leftReading,"\nSerial Connection Closed! \n");
     }
 
     private void tvAppend(TextView tv, CharSequence text) {

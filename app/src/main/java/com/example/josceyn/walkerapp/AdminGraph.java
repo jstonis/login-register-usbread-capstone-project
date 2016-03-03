@@ -50,6 +50,11 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        //go back
+
+        Button button=(Button) v;
+        startActivity(new Intent(getApplicationContext(),AdminView.class));
+
         int position;
         //if logout, bring back to login page
         if(v==findViewById(R.id.bLogout)){
