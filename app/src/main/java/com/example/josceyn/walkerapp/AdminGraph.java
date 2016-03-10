@@ -146,7 +146,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
     }
 
-    public ArrayList getArrayList(JSONArray jsonArray){
+    public static ArrayList getArrayList(JSONArray jsonArray){
         ArrayList<String> list = new ArrayList<String>();
         if (jsonArray != null) {
             int len = jsonArray.length();

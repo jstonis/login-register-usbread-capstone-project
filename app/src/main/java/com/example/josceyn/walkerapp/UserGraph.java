@@ -7,6 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 public class UserGraph extends AppCompatActivity {
 
     Button bLogout;
@@ -36,8 +41,17 @@ GraphView graph=(GraphView)findViewById(R.id.graph);
         Intent intent=getIntent();
         String username=intent.getStringExtra("username");
         user=userRepo.getStudentByUsername(username);
+        ArrayList items=new ArrayList();
 
-        adminComment.setText(user.comments);
+        try {
+            JSONObject json=new JSONObject(user.comments);
+             items=AdminGraph.getArrayList(json.optJSONArray("comments"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        adminComment.setText(items.get(items.size()-1).toString());
 
     }
 

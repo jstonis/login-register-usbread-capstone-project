@@ -39,13 +39,12 @@ public class UserDisplay extends Activity implements View.OnClickListener{
     UsbDevice device;
     UsbSerialDevice serialPort;
     UsbDeviceConnection connection;
-
+    String strBuilder;
    /* public UserDisplay(Student student){
         this.student=student;
     }*/
 
-
-   // private final String TAG = DeviceListActivity.class.getSimpleName();
+    // private final String TAG = DeviceListActivity.class.getSimpleName();
 
     private UsbManager mUsbManager;
     private ListView mListView;
@@ -58,7 +57,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
             String data = null;
             try {
                 data = new String(arg0, "UTF-8");
-                data.concat("/n");
+                //data.concat("/n");
 
                /* final TextView ftv = leftReading;
                 final TextView ftv1= rightReading;
@@ -66,8 +65,6 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                 final CharSequence ftextRIGHT;
                 CharSequence ftext1="";
                 CharSequence ftext2="";
-
-
                 if(data.contains("A") && !data.contains("SUM")){
                     if(data.indexOf("S")!=-1) {
                         ftext1 = data.substring(data.indexOf("S") + 3);
@@ -75,7 +72,6 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                     else{
                         ftext1="";
                     }
-
                 }
                 else if(data.contains("B") && !data.contains("SUM")){
                     if(data.indexOf("S")!=-1) {
@@ -84,20 +80,42 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                     else{
                         ftext2="";
                     }
-
                 }
                 else{
                     ftext1="not working";
                     ftext2="not working";
                 }
-
 */
               /*  ftextLEFT=ftext1;
                 ftextRIGHT=ftext2;*/
 
+            if(strBuilder.length()<22){
+               // tvAppend(leftReading,"");
+                strBuilder+=data;
+            }
+            else {
+
+                //String leftSide = strBuilder.substring(5);
+                String newStr=strBuilder.trim();
+                String appendStr=newStr.substring(18);
+                String appendStr2=newStr.substring(7,10);
+                tvAppend(leftReading, appendStr);
+                tvAppend(rightReading,appendStr2);
+                strBuilder = "";
+
+                /*if (strBuilder.indexOf("B ") > -1) {
+                    if((strBuilder.indexOf("B ")+7)<strBuilder.length()) {
+                        String leftSide = strBuilder.substring(strBuilder.indexOf("B ") + 7);
+                        tvAppend(leftReading, leftSide);
+                        strBuilder = "";
+                    }
+                }
+                else{
+                    strBuilder="";
+                }*/
+            }
 
 
-                tvAppend(leftReading, data);
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -127,7 +145,6 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                            /* final TextView ftv = leftReading;
                             final TextView ftv1= rightReading;
                             final CharSequence ftext = "connection opened";
-
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -135,7 +152,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                                     ftv1.setText(ftext);
                                 }
                             });*/
-                            tvAppend(leftReading,"Serial Connection Opened!\n");
+                         //   tvAppend(leftReading,"Serial Connection Opened!\n");
 
                         } else {
                             Log.d("SERIAL", "PORT NOT OPEN");
@@ -169,6 +186,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         rightReading=(TextView) findViewById(R.id.rightReading);
         bDetails.setOnClickListener(this);
         bLogout.setOnClickListener(this);
+        strBuilder="";
 
         usbManager = (UsbManager) getSystemService(this.USB_SERVICE);
         Intent intent=getIntent();
@@ -190,7 +208,6 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         if (availableDrivers.isEmpty()) {
             return;
         }
-
 // Open a connection to the first available driver.
         UsbSerialDriver driver = availableDrivers.get(0);
         UsbDeviceConnection connection = manager.openDevice(driver.getDevice());
@@ -198,15 +215,12 @@ public class UserDisplay extends Activity implements View.OnClickListener{
             // You probably need to call UsbManager.requestPermission(driver.getDevice(), ..)
             return;
         }
-
 // Read some data! Most have just one port (port 0).
        // UsbSerialPort port = driver.getPort(0);
         List myPortList = driver.getPorts();
         UsbSerialPort port = (UsbSerialPort)myPortList.get(0);
-
         try {
         port.open(connection);
-
             port.setParameters(9600,8,1,0);
             byte buffer[] = new byte[16];
             int numBytesRead = port.read(buffer, 1000);
@@ -215,12 +229,11 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         } catch (IOException e) {
             // Deal with error.
         } finally {
-
         }*/
 
 
 
-       // checkDeviceInfo();
+        // checkDeviceInfo();
 
 
        /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -274,7 +287,7 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ftv.append(ftext);
+                ftv.setText(ftext);
             }
         });
     }
