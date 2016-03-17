@@ -85,5 +85,13 @@
             android:layout_toStartOf="@+id/adminComment"
             android:layout_marginEnd="69dp" />
 
+        <ImageButton
+            android:layout_width="169dp"
+            android:layout_height="120dp"
+            android:id="@+id/dropbox"
+            android:src="@drawable/dropbox_logo"
+            android:layout_alignStart="@+id/bEdit"
+            android:layout_alignBottom="@+id/imageView" />
+
     </RelativeLayout>
     </ScrollView>

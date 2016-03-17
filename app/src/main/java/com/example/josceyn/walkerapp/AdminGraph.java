@@ -16,10 +16,30 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.session.AccessTokenPair;
+import com.dropbox.client2.session.AppKeyPair;
+import com.dropbox.client2.session.Session.AccessType;
+import com.dropbox.client2.session.TokenPair;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 public class AdminGraph extends Activity implements View.OnClickListener {
 
+    private DropboxAPI<AndroidAuthSession> dropbox;
     EditText adminComment;
-    Button bLogout, bSubmit, bEdit;
+    Button bLogout, bSubmit, bEdit, bDropbox;
     Student selectedUser;
     StudentRepo repo;
     boolean newComment=true;
@@ -41,10 +61,12 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         bLogout=(Button) findViewById(R.id.bLogout);
         bSubmit=(Button) findViewById(R.id.bSubmit);
         bEdit=(Button) findViewById(R.id.bEdit);
+        bDropbox=(Button) findViewById(R.id.dropbox);
 
         bLogout.setOnClickListener(this);
         bSubmit.setOnClickListener(this);
         bEdit.setOnClickListener(this);
+        bDropbox.setOnClickListener(this);
 
     }
 
@@ -114,7 +136,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                     confirmationDialog();
                 }
     }
-        else
+        else if(v==findViewById(R.id.bEdit))
         {
             newComment=false;
             String comm=selectedUser.comments;
@@ -132,6 +154,9 @@ public class AdminGraph extends Activity implements View.OnClickListener {
             ArrayList comments=getArrayList(json.optJSONArray("comments"));
 
             adminComment.setText(comments.get(comments.size()-1).toString());
+
+        }
+        else if(v==findViewById(R.id.dropbox)){
 
         }
 
