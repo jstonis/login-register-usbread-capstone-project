@@ -3,9 +3,14 @@ package com.example.josceyn.walkerapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -38,8 +43,14 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 public class AdminGraph extends Activity implements View.OnClickListener {
 
     private DropboxAPI<AndroidAuthSession> dropbox;
+    private final static String FILE_DIR = "/DropboxSample/";
+    private final static String DROPBOX_NAME = "dropbox_prefs";
+    private final static String ACCESS_KEY = "66lfl9cvrzq7gfv";
+    private final static String ACCESS_SECRET = "e8f91jvdg0brjm3";
+    private boolean isLoggedIn;
     EditText adminComment;
-    Button bLogout, bSubmit, bEdit, bDropbox;
+    Button bLogout, bSubmit, bEdit;
+    ImageButton bDropbox;
     Student selectedUser;
     StudentRepo repo;
     boolean newComment=true;
@@ -61,14 +72,53 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         bLogout=(Button) findViewById(R.id.bLogout);
         bSubmit=(Button) findViewById(R.id.bSubmit);
         bEdit=(Button) findViewById(R.id.bEdit);
-        bDropbox=(Button) findViewById(R.id.dropbox);
+        bDropbox=(ImageButton) findViewById(R.id.dropbox);
 
         bLogout.setOnClickListener(this);
         bSubmit.setOnClickListener(this);
         bEdit.setOnClickListener(this);
         bDropbox.setOnClickListener(this);
 
+
+        AndroidAuthSession session;
+        AppKeyPair pair = new AppKeyPair(ACCESS_KEY, ACCESS_SECRET);
+
+        SharedPreferences prefs = getSharedPreferences(DROPBOX_NAME, 0);
+        String key = prefs.getString(ACCESS_KEY, null);
+        String secret = prefs.getString(ACCESS_SECRET, null);
+
+
+        if (key != null && secret != null) {
+            AccessTokenPair token = new AccessTokenPair(key, secret);
+            session = new AndroidAuthSession(pair, AccessType.APP_FOLDER, token);
+        } else {
+            session = new AndroidAuthSession(pair, AccessType.APP_FOLDER);
+        }
+        dropbox = new DropboxAPI<AndroidAuthSession>(session);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        AndroidAuthSession session = dropbox.getSession();
+        if (session.authenticationSuccessful()) {
+            try {
+                session.finishAuthentication();
+                TokenPair tokens = session.getAccessTokenPair();
+                SharedPreferences prefs = getSharedPreferences(DROPBOX_NAME, 0);
+                Editor editor = prefs.edit();
+                editor.putString(ACCESS_KEY, tokens.key);
+                editor.putString(ACCESS_SECRET, tokens.secret);
+                editor.commit();
+            } catch (IllegalStateException e) {
+                Toast.makeText(this, "Error during Dropbox authentication",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -158,6 +208,9 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         }
         else if(v==findViewById(R.id.dropbox)){
 
+            UploadFileToDropbox upload = new UploadFileToDropbox(this, dropbox,
+                    FILE_DIR);
+            upload.execute();
         }
 
     }
@@ -170,6 +223,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         adminComment.setText("");
 
     }
+
 
     public static ArrayList getArrayList(JSONArray jsonArray){
         ArrayList<String> list = new ArrayList<String>();
