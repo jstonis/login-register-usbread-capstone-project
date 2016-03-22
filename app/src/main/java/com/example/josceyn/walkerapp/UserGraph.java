@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -27,6 +28,8 @@ public class UserGraph extends AppCompatActivity {
     Button bLogout;
     TextView adminComment;
     Student user;
+    ArrayList patientData;
+    ArrayList timeStamps;
 /*
 GraphView graph=(GraphView)findViewById(R.id.graph);
     LineGraphSeries<DataPoint> series=new LineGraphSeries<DataPoint>(new DataPoint[] {
@@ -55,7 +58,8 @@ GraphView graph=(GraphView)findViewById(R.id.graph);
 
         try {
             JSONObject json=new JSONObject(user.comments);
-             items=AdminGraph.getArrayList(json.optJSONArray("comments"));
+             items=userRepo.getArrayList(json.optJSONArray("comments"));
+            graph(items);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -64,6 +68,44 @@ GraphView graph=(GraphView)findViewById(R.id.graph);
         adminComment.setText(items.get(items.size()-1).toString());
 
     }
+    public void graph(ArrayList graphData){
+        //convert graph data to 2 arrays, 1 for data points, 1 for labels
+        convertDataTo2Arrays(graphData);
+        //title will be either "today", weekly update, or overall progress
+        //find corresponding data for selection
+        //graph
+
+
+
+        LineChart lineChart = (LineChart) findViewById(R.id.chart);
+
+
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(20, 0));
+        entries.add(new Entry(15, 1));
+        entries.add(new Entry(18, 2));
+        entries.add(new Entry(4, 3));
+        entries.add(new Entry(3, 4));
+        entries.add(new Entry(2, 5));
+
+        LineDataSet dataset = new LineDataSet(entries, "# of Calls");
+
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("January");
+        labels.add("February");
+        labels.add("March");
+        labels.add("April");
+        labels.add("May");
+        labels.add("June");
+
+        LineData data = new LineData(labels, dataset);
+        dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
+        dataset.setDrawCubic(true);
+        dataset.setDrawFilled(true);
+
+        lineChart.setData(data);
+        lineChart.animateY(5000);
+    }
 
     public void onClick(View view){
         //go back
@@ -71,5 +113,18 @@ GraphView graph=(GraphView)findViewById(R.id.graph);
         Button button = (Button) view;
         startActivity(new Intent(getApplicationContext(), UserDisplay.class));
     }
+    public void convertDataTo2Arrays(ArrayList strData){
+        //initialize arrays with capacities
+        patientData=new ArrayList(strData.size());
+        timeStamps=new ArrayList(strData.size());
+
+        //separate data
+        for(int i=0; i<strData.size(); i++){
+            String [] temp= strData.get(i).toString().split(",");
+            timeStamps.add(temp[0]);
+            patientData.add(temp[1]);
+        }
+    }
+
 
 }

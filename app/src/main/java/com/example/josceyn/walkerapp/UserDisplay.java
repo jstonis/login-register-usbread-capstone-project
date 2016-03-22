@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
@@ -25,9 +26,13 @@ import android.widget.Toast;
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import android.view.animation.Animation;
@@ -129,12 +134,32 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
 
         }
     };
+
+    //add data and timestamp to database of user to be able to graph
     public void addDataToDB(String leftRead, String rightRead){
+        StudentRepo repo=new StudentRepo(this);
         int leftWeight= Integer.parseInt(leftRead);
         int rightWeight=Integer.parseInt(rightRead);
+        Student patient=new Student();
 
-
-
+        patient=repo.getStudentByUsername(userName.toString());
+        ArrayList comments=new ArrayList();
+        JSONObject json = null;
+        try {
+            json = new JSONObject(patient.comments.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        comments = repo.getArrayList(json.optJSONArray("comments"));
+        comments.add(comments.size()-1, repo.getCurrentTimeStamp() + "," + Math.abs(leftWeight-rightWeight));
+        try {
+            json.put("comments",new JSONArray(comments));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //update patient with comments
+        patient.comments = json.toString();
+        repo.update(patient);
     }
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { //Broadcast Receiver to automatically start and stop the Serial connection.
         @Override
@@ -186,6 +211,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         ;
     };
 
+    //blinking arrow and sound animation
     public void animate(String appendStr, String appendStr2){
         final int leftWeight= Integer.parseInt(appendStr);
         final int rightWeight=Integer.parseInt(appendStr2);
@@ -239,9 +265,6 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
             });
 
         }
-
-
-
     }
 
 

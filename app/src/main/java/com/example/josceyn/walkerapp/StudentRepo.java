@@ -6,7 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class StudentRepo {
@@ -78,7 +83,7 @@ public class StudentRepo {
         //Student student = new Student();
         ArrayList<HashMap<String, String>> studentList = new ArrayList<HashMap<String, String>>();
 
-        Cursor cursor = db.rawQuery(selectQuery, new String[] { ptName });
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{ptName});
         // looping through all rows and adding to list
 
         if (cursor.moveToFirst()) {
@@ -245,6 +250,36 @@ public class StudentRepo {
             exception.printStackTrace();
         }
         return student;
+    }
+    public static ArrayList getArrayList(JSONArray jsonArray){
+        ArrayList<String> list = new ArrayList<String>();
+        if (jsonArray != null) {
+            int len = jsonArray.length();
+            for (int i=0;i<len;i++){
+                try {
+                    list.add(jsonArray.get(i).toString());
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+        }
+        return list;
+
+    }
+    //get timestamp
+    public static String getCurrentTimeStamp(){
+        try{
+            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentTimeStamp=dateFormat.format(new Date()); //find today's date
+            return currentTimeStamp;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

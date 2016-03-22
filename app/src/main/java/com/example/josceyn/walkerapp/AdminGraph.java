@@ -146,7 +146,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                        }
                         else {
                            json = new JSONObject(selectedUser.comments.toString());
-                           comments = getArrayList(json.optJSONArray("comments"));
+                           comments = repo.getArrayList(json.optJSONArray("comments"));
                        }
 
 
@@ -157,7 +157,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                     JSONObject json2=new JSONObject();
                     if (newComment) {
                         position = 0;
-                        comments.add(position, getCurrentTimeStamp() + ":" + adminComment.getText());
+                        comments.add(position, repo.getCurrentTimeStamp() + ":" + adminComment.getText());
 
                         try {
                             json2.put("comments",new JSONArray(comments));
@@ -201,7 +201,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            ArrayList comments=getArrayList(json.optJSONArray("comments"));
+            ArrayList comments=repo.getArrayList(json.optJSONArray("comments"));
 
             adminComment.setText(comments.get(comments.size()-1).toString());
 
@@ -222,38 +222,6 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
         adminComment.setText("");
 
-    }
-
-
-    public static ArrayList getArrayList(JSONArray jsonArray){
-        ArrayList<String> list = new ArrayList<String>();
-        if (jsonArray != null) {
-            int len = jsonArray.length();
-            for (int i=0;i<len;i++){
-                try {
-                    list.add(jsonArray.get(i).toString());
-                }
-                catch(JSONException e){
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-        }
-        return list;
-
-    }
-    //get timestamp
-    public static String getCurrentTimeStamp(){
-        try{
-            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentTimeStamp=dateFormat.format(new Date()); //find today's date
-            return currentTimeStamp;
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return null;
-        }
     }
     public void confirmationDialog(){
         //confirmation dialog
