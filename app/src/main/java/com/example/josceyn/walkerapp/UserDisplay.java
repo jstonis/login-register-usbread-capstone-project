@@ -9,10 +9,14 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,12 +30,16 @@ import org.w3c.dom.Text;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 
 
-public class UserDisplay extends Activity implements View.OnClickListener{
+public class UserDisplay extends Activity implements View.OnClickListener, AnimationListener{
 
     public final String ACTION_USB_PERMISSION = "com.example.josceyn.walkerapp.USB_PERMISSION";
-    TextView name,userName, leftReading, rightReading;
+    TextView name,userName, leftReading, rightReading, infoText;
+    ImageView leftArrow, rightArrow;
     Button bLogout, bDetails;
     Student student;
     PendingIntent mPermissionIntent;
@@ -40,6 +48,10 @@ public class UserDisplay extends Activity implements View.OnClickListener{
     UsbSerialDevice serialPort;
     UsbDeviceConnection connection;
     String strBuilder;
+    Animation Blink;
+    int animationThreshold=10;
+
+
    /* public UserDisplay(Student student){
         this.student=student;
     }*/
@@ -103,16 +115,9 @@ public class UserDisplay extends Activity implements View.OnClickListener{
                 tvAppend(rightReading,appendStr2);
                 strBuilder = "";
 
-                /*if (strBuilder.indexOf("B ") > -1) {
-                    if((strBuilder.indexOf("B ")+7)<strBuilder.length()) {
-                        String leftSide = strBuilder.substring(strBuilder.indexOf("B ") + 7);
-                        tvAppend(leftReading, leftSide);
-                        strBuilder = "";
-                    }
-                }
-                else{
-                    strBuilder="";
-                }*/
+                animate(appendStr,appendStr2);
+                addDataToDB(appendStr, appendStr2);
+
             }
 
 
@@ -124,6 +129,13 @@ public class UserDisplay extends Activity implements View.OnClickListener{
 
         }
     };
+    public void addDataToDB(String leftRead, String rightRead){
+        int leftWeight= Integer.parseInt(leftRead);
+        int rightWeight=Integer.parseInt(rightRead);
+
+
+
+    }
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { //Broadcast Receiver to automatically start and stop the Serial connection.
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -174,6 +186,65 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         ;
     };
 
+    public void animate(String appendStr, String appendStr2){
+        final int leftWeight= Integer.parseInt(appendStr);
+        final int rightWeight=Integer.parseInt(appendStr2);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.chord);
+
+
+        if (Math.abs(leftWeight-rightWeight)>=animationThreshold){
+            if(leftWeight>rightWeight) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        leftArrow.setVisibility(View.INVISIBLE);
+                        leftArrow.clearAnimation();
+                        rightArrow.setVisibility(View.VISIBLE);
+                        rightArrow.startAnimation(Blink);
+                        infoText.setText("Lean to the right!");
+                        mp.start();
+
+                    }
+                });
+
+
+            }
+            else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        rightArrow.setVisibility(View.INVISIBLE);
+                        rightArrow.clearAnimation();
+                        leftArrow.setVisibility(View.VISIBLE);
+                        leftArrow.startAnimation(Blink);
+                        infoText.setText("Lean to the left!");
+                        mp.start();
+
+                    }
+                });
+            }
+        }
+        else{
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    leftArrow.setVisibility(View.INVISIBLE);
+                    rightArrow.setVisibility(View.INVISIBLE);
+                    leftArrow.clearAnimation();
+                    rightArrow.clearAnimation();
+                    infoText.setText("");
+                    mp.stop();
+
+                }
+            });
+
+        }
+
+
+
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,8 +255,21 @@ public class UserDisplay extends Activity implements View.OnClickListener{
         bLogout=(Button) findViewById(R.id.bLogout);
         leftReading=(TextView) findViewById(R.id.leftReading);
         rightReading=(TextView) findViewById(R.id.rightReading);
+        leftArrow=(ImageView) findViewById(R.id.leftArrow);
+        rightArrow=(ImageView) findViewById(R.id.rightArrow);
+        leftArrow.setVisibility(View.GONE);
+        rightArrow.setVisibility(View.GONE);
+        infoText=(TextView) findViewById(R.id.infoText);
         bDetails.setOnClickListener(this);
         bLogout.setOnClickListener(this);
+        // load the animation
+        Blink = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.blinking_animation);
+
+        // set animation listener
+        Blink.setAnimationListener(this);
+
+
         strBuilder="";
 
         usbManager = (UsbManager) getSystemService(this.USB_SERVICE);
@@ -304,6 +388,21 @@ public class UserDisplay extends Activity implements View.OnClickListener{
             Intent intent=new Intent(this,MainActivity.class);
             startActivity(intent);
         }
+
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
 
     }
 }

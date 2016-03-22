@@ -35,58 +35,89 @@
 
         <!-- Logo Ends -->
     </LinearLayout>
-    <!--  Header Ends -->
-    <TextView
-        android:layout_width="166dp"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_gravity="right|bottom"
-        android:layout_weight="0.05"
-        android:paddingBottom="100dp"
-        android:id="@+id/rightReading"
-        android:background="@layout/outline"
-        android:layout_above="@+id/bLogout"
-        android:layout_alignEnd="@+id/imageView" />
-
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Details"
-        android:id="@+id/bDetails"
-        android:layout_gravity="right|bottom"
-        android:layout_weight="0.05"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_alignStart="@+id/rightReading"
-        android:layout_alignEnd="@+id/imageView" />
-
-    <Button
-        android:layout_width="169dp"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:id="@+id/bLogout"
-        android:layout_gravity="right|center_vertical"
-        android:layout_alignEnd="@+id/bDetails"
-        android:layout_alignStart="@+id/rightReading"
-        android:layout_above="@+id/bDetails" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/imageView2"
         android:src="@drawable/rsz_original_315969_yo5b7fv5sjb40kbqiahwyzzsd"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/header" />
+    <RelativeLayout
+        android:layout_width="320dp"
+        android:layout_height="240dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/header"
+        android:layout_below="@+id/header"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/rsz_original_315969_yo5b7fv5sjb40kbqiahwyzzsd">
 
-    <TextView
-        android:layout_width="166dp"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/leftReading"
-        android:background="@layout/outline"
-        android:layout_above="@+id/bLogout"
-        android:layout_alignTop="@+id/rightReading"
-        android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/infoText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/leftReading"
+            android:textSize="30dp"
+            android:text="555"
+            android:layout_alignTop="@+id/rightReading"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/rightReading"
+            android:textSize="30dp"
+            android:layout_alignStart="@+id/bDetails"
+            android:text="555"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true" />
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:id="@+id/leftArrow"
+            android:src="@drawable/arrow_left"
+            android:layout_alignParentStart="true"
+            android:layout_alignBottom="@+id/rightArrow" />
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:id="@+id/rightArrow"
+            android:src="@drawable/arrow_right"
+            android:layout_below="@+id/rightReading"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Details"
+            android:id="@+id/bDetails"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="48dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:id="@+id/bLogout"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+
+    </RelativeLayout>
+
+    <!--  Header Ends -->
 
 
 </RelativeLayout>
