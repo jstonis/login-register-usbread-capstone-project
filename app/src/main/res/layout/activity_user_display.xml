@@ -66,7 +66,6 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/leftReading"
             android:textSize="30dp"
-            android:text="555"
             android:layout_alignTop="@+id/rightReading"
             android:layout_alignParentStart="true" />
 
@@ -77,7 +76,6 @@
             android:id="@+id/rightReading"
             android:textSize="30dp"
             android:layout_alignStart="@+id/bDetails"
-            android:text="555"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true" />
 

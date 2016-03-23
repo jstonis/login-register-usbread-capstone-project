@@ -65,7 +65,8 @@ public class StudentRepo {
         values.put(Student.KEY_comments, student.comments);
 
         // It's a good practice to use parameter ?, instead of concatenate string
-        db.update(Student.TABLE, values, Student.KEY_ID + "= ?", new String[]{String.valueOf(student.student_ID)});
+
+        db.update(Student.TABLE, values, Student.KEY_username + "= ?", new String[]{String.valueOf(student.username)});
         db.close(); // Closing database connection
     }
 
@@ -138,6 +139,7 @@ public class StudentRepo {
     }
 
     public Student getStudentByUsername(String username){
+        System.out.println("in student repo: "+ username);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 Student.KEY_ID + "," +
@@ -165,7 +167,8 @@ public class StudentRepo {
                 student.password =cursor.getString(cursor.getColumnIndex(Student.KEY_password));
                 student.pt =cursor.getString(cursor.getColumnIndex(Student.KEY_PT));
                 student.admin =cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
-
+                student.usbdata=cursor.getString(cursor.getColumnIndex(Student.KEY_usbdata));
+                student.comments=cursor.getString(cursor.getColumnIndex(Student.KEY_comments));
             } while (cursor.moveToNext());
         }
 

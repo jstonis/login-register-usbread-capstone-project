@@ -46,7 +46,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     TextView name,userName, leftReading, rightReading, infoText;
     ImageView leftArrow, rightArrow;
     Button bLogout, bDetails;
-    Student student;
+    Student student, patient;
     PendingIntent mPermissionIntent;
     UsbManager usbManager;
     UsbDevice device;
@@ -140,26 +140,34 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         StudentRepo repo=new StudentRepo(this);
         int leftWeight= Integer.parseInt(leftRead);
         int rightWeight=Integer.parseInt(rightRead);
-        Student patient=new Student();
 
-        patient=repo.getStudentByUsername(userName.toString());
-        ArrayList comments=new ArrayList();
+        ArrayList usbData=new ArrayList();
         JSONObject json = null;
         try {
-            json = new JSONObject(patient.comments.toString());
+            if(patient.usbdata==null){
+                patient.usbdata="";
+                usbData.add(0,repo.getCurrentTimeStamp()+","+Math.abs(leftWeight-rightWeight));
+                json=new JSONObject();
+                json.put("usbData", new JSONArray(usbData));
+
+                //update selected user with usbdata
+                patient.usbdata = json.toString();
+
+                repo.update(patient);
+            }
+            else {
+                json = new JSONObject(patient.usbdata.toString());
+                usbData = repo.getArrayList(json.optJSONArray("usbData"));
+                usbData.add(usbData.size(), repo.getCurrentTimeStamp() + "," + Math.abs(leftWeight-rightWeight));
+                json.put("usbData", new JSONArray(usbData));
+                //update patient with usb data
+                patient.usbdata = json.toString();
+                repo.update(patient);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        comments = repo.getArrayList(json.optJSONArray("comments"));
-        comments.add(comments.size()-1, repo.getCurrentTimeStamp() + "," + Math.abs(leftWeight-rightWeight));
-        try {
-            json.put("comments",new JSONArray(comments));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //update patient with comments
-        patient.comments = json.toString();
-        repo.update(patient);
+
     }
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { //Broadcast Receiver to automatically start and stop the Serial connection.
         @Override
@@ -298,8 +306,9 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         usbManager = (UsbManager) getSystemService(this.USB_SERVICE);
         Intent intent=getIntent();
         userName.setText(intent.getStringExtra("user_name"));
-        student=userRepo.getStudentByUsername(userName.getText().toString());
+        patient=userRepo.getStudentByUsername(userName.toString());
 
+        System.out.println("In user display: "+ userName.getText());
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
@@ -403,9 +412,9 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     @Override
     public void onClick(View v) {
         if(v==findViewById(R.id.bDetails)){
-            Intent intent=new Intent(this,UserGraph.class);
-            intent.putExtra("username", student.username);
-            startActivity(intent);
+            Intent main=new Intent(getApplicationContext(), UserGraph.class);
+            main.putExtra("username", userName.getText());
+            startActivity(main);
         }
         else{
             Intent intent=new Intent(this,MainActivity.class);
