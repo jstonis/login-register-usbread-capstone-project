@@ -14,7 +14,7 @@ public class Student {
     public static final String KEY_admin="admin";
     public static final String KEY_age = "age";
     public static final String KEY_comments="comments";
-    public static final String KEY_usbdata="usbdata";
+    public static final String KEY_usbdata="usbData";
 
     // property help us to keep data
     public int student_ID;

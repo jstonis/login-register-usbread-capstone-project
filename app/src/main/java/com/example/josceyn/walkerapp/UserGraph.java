@@ -98,9 +98,7 @@ public class UserGraph extends AppCompatActivity {
                 getGraphData();
                 graph();
             }
-            else{
 
-            }
 
         System.out.println("LOOK HERE: "+user.username+" "+ user.password+ " " + user.name+ " "+user.usbdata);
 

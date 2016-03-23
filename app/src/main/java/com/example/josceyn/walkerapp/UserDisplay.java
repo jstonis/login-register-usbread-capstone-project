@@ -47,6 +47,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     ImageView leftArrow, rightArrow;
     Button bLogout, bDetails;
     Student student, patient;
+    StudentRepo userRepo;
     PendingIntent mPermissionIntent;
     UsbManager usbManager;
     UsbDevice device;
@@ -74,37 +75,6 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
             String data = null;
             try {
                 data = new String(arg0, "UTF-8");
-                //data.concat("/n");
-
-               /* final TextView ftv = leftReading;
-                final TextView ftv1= rightReading;
-                final CharSequence ftextLEFT;
-                final CharSequence ftextRIGHT;
-                CharSequence ftext1="";
-                CharSequence ftext2="";
-                if(data.contains("A") && !data.contains("SUM")){
-                    if(data.indexOf("S")!=-1) {
-                        ftext1 = data.substring(data.indexOf("S") + 3);
-                    }
-                    else{
-                        ftext1="";
-                    }
-                }
-                else if(data.contains("B") && !data.contains("SUM")){
-                    if(data.indexOf("S")!=-1) {
-                        ftext2 = data.substring(data.indexOf("S") + 3);
-                    }
-                    else{
-                        ftext2="";
-                    }
-                }
-                else{
-                    ftext1="not working";
-                    ftext2="not working";
-                }
-*/
-              /*  ftextLEFT=ftext1;
-                ftextRIGHT=ftext2;*/
 
             if(strBuilder.length()<22){
                // tvAppend(leftReading,"");
@@ -137,32 +107,61 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
 
     //add data and timestamp to database of user to be able to graph
     public void addDataToDB(String leftRead, String rightRead){
-        StudentRepo repo=new StudentRepo(this);
+        //convert string data to integer data
         int leftWeight= Integer.parseInt(leftRead);
         int rightWeight=Integer.parseInt(rightRead);
 
+
+        //array list for data
         ArrayList usbData=new ArrayList();
+        //used to convert string data from db to arraylist
         JSONObject json = null;
         try {
+            //if new data, do this
             if(patient.usbdata==null){
                 patient.usbdata="";
-                usbData.add(0,repo.getCurrentTimeStamp()+","+Math.abs(leftWeight-rightWeight));
+                //add to first index of array
+                usbData.add(0,userRepo.getCurrentTimeStamp()+","+Math.abs(leftWeight-rightWeight));
+
+                //used to debug, DELETE LATER
+                final int leftTest=leftWeight;
+                final int rightTest=rightWeight;
+
+                //instantiate JSONObject
                 json=new JSONObject();
                 json.put("usbData", new JSONArray(usbData));
 
+                //used to debug, DELETE LATER
+                final ArrayList testData=usbData;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        infoText.setText(testData.get(0).toString());
+                        infoText.append("timestamp="+userRepo.getCurrentTimeStamp()+ " "+ Math.abs(leftTest-rightTest));
+
+
+                    }
+                });
                 //update selected user with usbdata
                 patient.usbdata = json.toString();
 
-                repo.update(patient);
             }
+            //if already data for user, append new data
             else {
                 json = new JSONObject(patient.usbdata.toString());
-                usbData = repo.getArrayList(json.optJSONArray("usbData"));
-                usbData.add(usbData.size(), repo.getCurrentTimeStamp() + "," + Math.abs(leftWeight-rightWeight));
+                usbData = userRepo.getArrayList(json.optJSONArray("usbData"));
+                usbData.add(usbData.size(), userRepo.getCurrentTimeStamp() + "," + Math.abs(leftWeight - rightWeight));
                 json.put("usbData", new JSONArray(usbData));
-                //update patient with usb data
+
+                //update patient with usb data-DELETE LATER-debugging purposes
                 patient.usbdata = json.toString();
-                repo.update(patient);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        infoText.setText("YAY!!!" + patient.usbdata);
+                    }
+                });
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -221,6 +220,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
 
     //blinking arrow and sound animation
     public void animate(String appendStr, String appendStr2){
+        //convert to integers
         final int leftWeight= Integer.parseInt(appendStr);
         final int rightWeight=Integer.parseInt(appendStr2);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.chord);
@@ -235,7 +235,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                         leftArrow.clearAnimation();
                         rightArrow.setVisibility(View.VISIBLE);
                         rightArrow.startAnimation(Blink);
-                        infoText.setText("Lean to the right!");
+                       // infoText.setText("Lean to the right!");
                         mp.start();
 
                     }
@@ -251,7 +251,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                         rightArrow.clearAnimation();
                         leftArrow.setVisibility(View.VISIBLE);
                         leftArrow.startAnimation(Blink);
-                        infoText.setText("Lean to the left!");
+                       // infoText.setText("Lean to the left!");
                         mp.start();
 
                     }
@@ -266,7 +266,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                     rightArrow.setVisibility(View.INVISIBLE);
                     leftArrow.clearAnimation();
                     rightArrow.clearAnimation();
-                    infoText.setText("");
+                   // infoText.setText("");
                     mp.stop();
 
                 }
@@ -280,7 +280,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_display);
-        StudentRepo userRepo=new StudentRepo(this);
+        userRepo=new StudentRepo(this);
         userName=(TextView) findViewById(R.id.userName);
         bDetails=(Button) findViewById(R.id.bDetails);
         bLogout=(Button) findViewById(R.id.bLogout);
@@ -315,54 +315,6 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         registerReceiver(broadcastReceiver, filter);
         onUSBStart();
-
-       /* Intent intent2=new Intent(this,DeviceListActivity.class);
-        startActivity(intent2);*/
-        /*// Find all available drivers from attached devices.
-        UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
-        if (availableDrivers.isEmpty()) {
-            return;
-        }
-// Open a connection to the first available driver.
-        UsbSerialDriver driver = availableDrivers.get(0);
-        UsbDeviceConnection connection = manager.openDevice(driver.getDevice());
-        if (connection == null) {
-            // You probably need to call UsbManager.requestPermission(driver.getDevice(), ..)
-            return;
-        }
-// Read some data! Most have just one port (port 0).
-       // UsbSerialPort port = driver.getPort(0);
-        List myPortList = driver.getPorts();
-        UsbSerialPort port = (UsbSerialPort)myPortList.get(0);
-        try {
-        port.open(connection);
-            port.setParameters(9600,8,1,0);
-            byte buffer[] = new byte[16];
-            int numBytesRead = port.read(buffer, 1000);
-            Log.d("", "Read " + numBytesRead + " bytes.");
-            port.close();
-        } catch (IOException e) {
-            // Deal with error.
-        } finally {
-        }*/
-
-
-
-        // checkDeviceInfo();
-
-
-       /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);*/
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-           /* }
-        });*/
     }
 
     public void onUSBStart() {
@@ -412,6 +364,8 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     @Override
     public void onClick(View v) {
         if(v==findViewById(R.id.bDetails)){
+            //update database with all data
+            userRepo.update(patient);
             Intent main=new Intent(getApplicationContext(), UserGraph.class);
             main.putExtra("username", userName.getText());
             startActivity(main);
