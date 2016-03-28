@@ -112,6 +112,8 @@ public class StudentRepo {
                 Student.KEY_password + "," +
                 Student.KEY_PT + "," +
                 Student.KEY_admin + "," +
+                Student.KEY_usbdata + "," +
+                Student.KEY_comments + "," +
                 " FROM " + Student.TABLE
                 + " WHERE " +
                 Student.KEY_ID + "=?";// It's a good practice to use parameter ?, instead of concatenate string
@@ -129,7 +131,46 @@ public class StudentRepo {
                 student.password =cursor.getString(cursor.getColumnIndex(Student.KEY_password));
                 student.pt =cursor.getString(cursor.getColumnIndex(Student.KEY_PT));
                 student.admin =cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
+                student.usbdata=cursor.getString(cursor.getColumnIndex(Student.KEY_usbdata));
+                student.comments=cursor.getString(cursor.getColumnIndex(Student.KEY_comments));
 
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return student;
+    }
+    public Student getStudentsDataByUsername(String username){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery =  "SELECT  " +
+                Student.KEY_ID + "," +
+                Student.KEY_name + "," +
+                Student.KEY_username + "," +
+                Student.KEY_password + "," +
+                Student.KEY_PT + "," +
+                Student.KEY_admin + "," +
+                Student.KEY_comments + "," +
+                Student.KEY_usbdata +
+                " FROM " + Student.TABLE
+                + " WHERE " +
+                Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
+
+        int iCount =0;
+        Student student = new Student();
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { username } );
+
+        if (cursor.moveToFirst()) {
+            do {
+                student.student_ID =cursor.getInt(cursor.getColumnIndex(Student.KEY_ID));
+                student.name =cursor.getString(cursor.getColumnIndex(Student.KEY_name));
+                student.username  =cursor.getString(cursor.getColumnIndex(Student.KEY_username));
+                student.password =cursor.getString(cursor.getColumnIndex(Student.KEY_password));
+                student.pt =cursor.getString(cursor.getColumnIndex(Student.KEY_PT));
+                student.admin =cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
+                student.usbdata=cursor.getString(cursor.getColumnIndex(Student.KEY_usbdata));
+                student.comments=cursor.getString(cursor.getColumnIndex(Student.KEY_comments));
             } while (cursor.moveToNext());
         }
 
@@ -139,7 +180,7 @@ public class StudentRepo {
     }
 
     public Student getStudentByUsername(String username){
-        System.out.println("in student repo: "+ username);
+
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 Student.KEY_ID + "," +

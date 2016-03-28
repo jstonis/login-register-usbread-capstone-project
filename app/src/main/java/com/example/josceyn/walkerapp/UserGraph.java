@@ -1,6 +1,7 @@
 package com.example.josceyn.walkerapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +37,7 @@ public class UserGraph extends AppCompatActivity {
     Button bLogout;
     TextView adminComment, userName;
     Student user;
-    ArrayList<Float> patientData;
+    ArrayList<Float> patientDataLeft, patientDataRight;
     ArrayList timeStamps, items, adminComments;
     RadioGroup graphType;
     int graphView;
@@ -51,18 +52,19 @@ public class UserGraph extends AppCompatActivity {
         bLogout=(Button) findViewById(R.id.bLogout);
         adminComment=(TextView) findViewById(R.id.adminComment);
         userName=(TextView) findViewById(R.id.userName);
-        patientData=new ArrayList();
+        patientDataLeft=new ArrayList();
+        patientDataRight=new ArrayList();
         timeStamps=new ArrayList();
         user=new Student();
-
-
         graphType = (RadioGroup) findViewById(R.id.radioGroup);
+        graphView=graphType.getCheckedRadioButtonId();
         graphType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 graphView=checkedId;
-                patientData.clear();
+                patientDataLeft.clear();
+                patientDataRight.clear();
                 timeStamps.clear();
                 getGraphData();
                 graph();
@@ -77,7 +79,7 @@ public class UserGraph extends AppCompatActivity {
         System.out.println("TEST:"+ test);
         userName.setText(intent.getStringExtra("username"));
         user=userRepo.getStudentByUsername(test);
-
+        System.out.println("USERS USERNAME= "+user.username);
 
         adminComments=new ArrayList();
 
@@ -94,7 +96,7 @@ public class UserGraph extends AppCompatActivity {
 
             if(user.usbdata!=null){
                 JSONObject json2=new JSONObject(user.usbdata);
-                items=userRepo.getArrayList(json2.optJSONArray("usbData"));
+                items=userRepo.getArrayList(json2.optJSONArray("usbdata"));
                 getGraphData();
                 graph();
             }
@@ -116,16 +118,34 @@ public class UserGraph extends AppCompatActivity {
     }
     public void graph(){
 
-        LineChart lineChart = (LineChart) findViewById(R.id.chart);
+       // LineChart lineChart = (LineChart) findViewById(R.id.chart);
+        BarChart barChart=(BarChart) findViewById(R.id.chart);
+
+        BarData data;
 
 
-        ArrayList<Entry> entries = new ArrayList<>();
-
-        for(int i=0; i<patientData.size(); i++){
-            entries.add(new Entry(patientData.get(i),i));
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        BarEntry barEntry;
+        for(int i=0; i<patientDataLeft.size(); i++){
+            barEntry=new BarEntry(patientDataLeft.get(i),i);
+            entries.add(barEntry);
         }
 
-        LineDataSet dataset = new LineDataSet(entries, "Unequal Weight Distribution");
+        ArrayList<BarEntry> entries2 = new ArrayList<>();
+        for(int i=0; i<patientDataRight.size(); i++){
+            barEntry=new BarEntry(patientDataRight.get(i),i);
+            entries2.add(barEntry);
+        }
+
+        BarDataSet barDataSet1=new BarDataSet(entries,"Left Side");
+        barDataSet1.setColor(Color.rgb(0, 155, 0));
+        BarDataSet barDataSet2=new BarDataSet(entries2, "Right Side");
+        barDataSet2.setColor(Color.rgb(0, 0, 155));
+
+        ArrayList<BarDataSet> dataSets=new ArrayList<>();
+        dataSets.add(barDataSet1);
+        dataSets.add(barDataSet2);
+
 
         ArrayList<String> labels = new ArrayList<String>();
         labels.add(timeStamps.get(0).toString());
@@ -135,13 +155,23 @@ public class UserGraph extends AppCompatActivity {
         labels.add(timeStamps.size()-1, timeStamps.get(timeStamps.size()-1).toString());
 
 
-        LineData data = new LineData(labels, dataset);
+        data = new BarData(labels, dataSets);
+        barChart.setData(data);
+        barChart.setDescription("My Chart");
+        barChart.animateXY(2000, 2000);
+        barChart.invalidate();
+
+
+      //  LineDataSet dataset = new LineDataSet(entries, "Unequal Weight Distribution");
+
+
+       /* LineData data = new LineData(labels, dataset);
         dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
         dataset.setDrawCubic(true);
         dataset.setDrawFilled(true);
 
         lineChart.setData(data);
-        lineChart.animateY(5000);
+        lineChart.animateY(5000);*/
     }
 
     public void onClick(View view){
@@ -152,23 +182,32 @@ public class UserGraph extends AppCompatActivity {
     }
     public void getGraphData(){
         //separate data
+        System.out.println("items "+items.size());
+
         for(int i=0; i<items.size(); i++){
             String [] temp= items.get(i).toString().split(",");
+
 
             if(graphView==R.id.rButtonToday){
                 try{
                     SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    System.out.println("HERE");
                     Date date=format.parse(temp[0]);
+                    System.out.println("HERE1");
                     Calendar cal= GregorianCalendar.getInstance();
                     cal.setTime(date);
+                    System.out.println("HERE2");
 
                     //todays date
                     Calendar calendar=Calendar.getInstance();
                     int day=calendar.get(Calendar.DAY_OF_WEEK);
+                    System.out.println("GET DAY OF WEEK OF DATA: "+ cal.get(Calendar.DAY_OF_WEEK));
+                    System.out.println("TODAYS DATE "+ day);
 
                     if(cal.get(Calendar.DAY_OF_WEEK)==day){
                         timeStamps.add(temp[0]);
-                        patientData.add(Float.parseFloat(temp[1]));
+                        patientDataLeft.add(Float.parseFloat(temp[1]));
+                        patientDataRight.add(Float.parseFloat(temp[2]));
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -189,25 +228,28 @@ public class UserGraph extends AppCompatActivity {
 
                 if(date.after(currentDateBefore7Days.getTime())){
                     timeStamps.add(temp[0]);
-                    patientData.add(Float.parseFloat(temp[1]));
+                    patientDataLeft.add(Float.parseFloat(temp[1]));
+                    patientDataRight.add(Float.parseFloat(temp[2]));
                 }
             } else if (graphView==R.id.rButtonOverall){
                 timeStamps.add(temp[0]);
-                patientData.add(Float.parseFloat(temp[1]));
+                patientDataLeft.add(Float.parseFloat(temp[1]));
+                patientDataRight.add(Float.parseFloat(temp[2]));
             }
             temp=null;
         }
     }
     public void convertDataTo2Arrays(ArrayList strData){
         //initialize arrays with capacities
-        patientData=new ArrayList(strData.size());
+        patientDataLeft=new ArrayList(strData.size());
+        patientDataRight=new ArrayList(strData.size());
         timeStamps=new ArrayList(strData.size());
 
         //separate data
         for(int i=0; i<strData.size(); i++){
             String [] temp= strData.get(i).toString().split(",");
             timeStamps.add(temp[0]);
-            patientData.add(Float.parseFloat(temp[1]));
+          //  patientData.add(Float.parseFloat(temp[1]));
         }
     }
 
