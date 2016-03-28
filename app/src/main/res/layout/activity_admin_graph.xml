@@ -10,7 +10,7 @@
         <!--  Header  Starts-->
         <LinearLayout android:id="@+id/header"
             android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_height="75dp"
             android:background="@layout/header_gradient"
             android:paddingTop="5dip"
             android:paddingBottom="5dip">
@@ -18,7 +18,6 @@
             <ImageView android:src="@drawable/logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
                 android:paddingTop="20dp"/>
 
             <!-- Logo Ends -->
@@ -27,23 +26,22 @@
 
         <Button
             android:layout_width="166dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="Submit"
             android:id="@+id/bSubmit"
             android:layout_gravity="right|bottom"
             android:layout_weight="0.05"
-            android:layout_above="@+id/bLogout"
-            android:layout_alignEnd="@+id/bLogout" />
+            android:layout_alignTop="@+id/btnBack"
+            android:layout_centerHorizontal="true" />
 
         <Button
-            android:layout_width="169dp"
-            android:layout_height="wrap_content"
+            android:layout_width="166dp"
+            android:layout_height="40dp"
             android:text="Logout"
             android:id="@+id/bLogout"
             android:layout_gravity="right|center_vertical"
             android:layout_alignParentBottom="true"
-            android:layout_toEndOf="@+id/imageView"
-            android:layout_marginBottom="68dp" />
+            android:layout_alignParentEnd="true" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -51,33 +49,32 @@
             android:id="@+id/imageView"
             android:src="@drawable/graph"
             android:layout_below="@+id/header"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="69dp" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:id="@+id/adminComment"
-            android:layout_alignEnd="@+id/imageView"
-            android:layout_alignBottom="@+id/bLogout"
-            android:layout_alignStart="@+id/imageView"
-            android:layout_below="@+id/imageView"
             android:background="@layout/outline"
-            android:textSize="25dp"/>
+            android:textSize="25dp"
+            android:layout_above="@+id/bLogout"
+            android:layout_below="@+id/imageView"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit Previous Post"
+            android:layout_width="166dp"
+            android:layout_height="40dp"
+            android:text="Edit Previous"
             android:id="@+id/bEdit"
-            android:layout_above="@+id/bSubmit"
-            android:layout_alignStart="@+id/bSubmit"
-            android:layout_alignEnd="@+id/bSubmit" />
+            android:layout_alignTop="@+id/bSubmit"
+            android:layout_alignParentStart="true" />
 
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="Back"
             android:id="@+id/btnBack"
             android:layout_alignBaseline="@+id/bLogout"
@@ -86,12 +83,12 @@
             android:layout_marginEnd="69dp" />
 
         <ImageButton
-            android:layout_width="169dp"
-            android:layout_height="120dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/dropbox"
-            android:src="@drawable/dropbox_logo"
-            android:layout_alignStart="@+id/bEdit"
-            android:layout_alignBottom="@+id/imageView" />
+            android:src="@drawable/db"
+            android:layout_below="@+id/header"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
     </ScrollView>
