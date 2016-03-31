@@ -1,8 +1,14 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:fillViewport="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    tools:context=".AdminGraph">
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" android:background="#ffffff">
@@ -10,15 +16,29 @@
         <!--  Header  Starts-->
         <LinearLayout android:id="@+id/header"
             android:layout_width="fill_parent"
-            android:layout_height="75dp"
+            android:layout_height="50dp"
             android:background="@layout/header_gradient"
             android:paddingTop="5dip"
-            android:paddingBottom="5dip">
+            android:paddingBottom="5dip"
+            android:weightSum="1">
+
+
             <!-- Logo Start-->
+
             <ImageView android:src="@drawable/logo"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"/>
+                android:paddingTop="5dp"/>
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="end|center"
+                android:text="User's Name"
+                android:textSize="19dp"
+                android:paddingTop="5dp" />
 
             <!-- Logo Ends -->
         </LinearLayout>
@@ -43,23 +63,54 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true" />
 
-        <ImageView
+
+        <com.github.mikephil.charting.charts.BarChart
             android:layout_width="wrap_content"
             android:layout_height="200dp"
-            android:id="@+id/imageView"
-            android:src="@drawable/graph"
+            android:id="@+id/userGraph"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/radioGroup"
+            android:allowUndo="false"
+            android:layout_above="@+id/adminComment" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="0.75"
+            android:id="@+id/radioGroup"
             android:layout_below="@+id/header"
             android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true" />
+            android:orientation="horizontal"
+            android:layout_toStartOf="@+id/bLogout"
+            android:weightSum="1"
+            android:layout_alignEnd="@+id/bEdit">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today"
+                android:id="@+id/rButtonToday"
+                android:layout_below="@+id/header"
+                android:layout_alignParentStart="true"
+                android:checked="true" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Overall"
+                android:id="@+id/rButtonOverall"
+                android:layout_below="@+id/header"
+                android:checked="false" />
+
+        </RadioGroup>
 
         <EditText
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="50dp"
             android:id="@+id/adminComment"
             android:background="@layout/outline"
             android:textSize="25dp"
             android:layout_above="@+id/bLogout"
-            android:layout_below="@+id/imageView"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true" />
 
@@ -83,12 +134,44 @@
             android:layout_marginEnd="69dp" />
 
         <ImageButton
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:id="@+id/dropbox"
             android:src="@drawable/db"
             android:layout_below="@+id/header"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/userGraph"
+            android:background="#ffffff" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Line Graph"
+            android:id="@+id/bSwitchGraph"
+            android:layout_below="@+id/header"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@+id/radioGroup" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:id="@+id/bNextSet"
+            android:layout_below="@+id/header"
+            android:layout_toStartOf="@+id/dropbox"
+            android:layout_alignBottom="@+id/dropbox" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prev"
+            android:id="@+id/bPreviousSet"
+            android:layout_above="@+id/userGraph"
+            android:layout_toStartOf="@+id/bNextSet"
+            android:layout_below="@+id/header" />
 
     </RelativeLayout>
     </ScrollView>

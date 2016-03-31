@@ -295,6 +295,7 @@ public class StudentRepo {
         }
         return student;
     }
+
     public static ArrayList getArrayList(JSONArray jsonArray){
         ArrayList<String> list = new ArrayList<String>();
         if (jsonArray != null) {

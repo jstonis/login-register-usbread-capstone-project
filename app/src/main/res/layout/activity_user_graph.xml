@@ -10,16 +10,16 @@
         <!--  Header  Starts-->
         <LinearLayout android:id="@+id/header"
             android:layout_width="fill_parent"
-            android:layout_height="75dp"
+            android:layout_height="50dp"
             android:background="@layout/header_gradient"
             android:paddingTop="5dip"
             android:paddingBottom="5dip"
             android:weightSum="1">
             <!-- Logo Start-->
             <ImageView android:src="@drawable/logo"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"/>
+                android:paddingTop="5dp"/>
 
             <TextView
                 android:id="@+id/userName"
@@ -29,7 +29,7 @@
                 android:gravity="end|center"
                 android:text="User's Name"
                 android:textSize="19dp"
-                android:paddingTop="30dp"/>
+                android:paddingTop="5dp"/>
 
             <!-- Logo Ends -->
         </LinearLayout>
@@ -43,12 +43,18 @@
             android:layout_gravity="right|center_vertical"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true" />
-        <com.github.mikephil.charting.charts.LineChart
+        <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_above="@+id/bLogout"
-            android:layout_below="@+id/radioGroup" />
+            android:layout_below="@+id/radioGroup"
+            android:layout_above="@+id/bLogout" />
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@+id/radioGroup"
+            android:layout_above="@+id/bLogout" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -91,14 +97,7 @@
                 android:layout_below="@+id/header"
                 android:layout_alignParentStart="true"
                 android:checked="true" />
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Weekly"
-                android:id="@+id/rButtonWeekly"
-                android:layout_below="@+id/header"
-                android:layout_alignParentStart="true"
-                android:checked="false" />
+
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -108,6 +107,36 @@
                 android:checked="false" />
 
         </RadioGroup>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Set"
+            android:id="@+id/bNextSet"
+            android:layout_below="@+id/header"
+            android:layout_alignEnd="@+id/bLogout"
+            android:layout_above="@+id/chart" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Previous"
+            android:id="@+id/bPreviousSet"
+            android:layout_below="@+id/header"
+            android:layout_toStartOf="@+id/bNextSet"
+            android:layout_above="@+id/chart" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Line Graph"
+            android:id="@+id/bSwitchGraph"
+            android:layout_below="@+id/header"
+            android:layout_toStartOf="@+id/bPreviousSet"
+            android:layout_alignBottom="@+id/bPreviousSet" />
 
 
     </RelativeLayout>

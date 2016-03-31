@@ -43,7 +43,7 @@ import android.view.animation.AnimationUtils;
 public class UserDisplay extends Activity implements View.OnClickListener, AnimationListener{
 
     public final String ACTION_USB_PERMISSION = "com.example.josceyn.walkerapp.USB_PERMISSION";
-    TextView name,userName, leftReading, rightReading, infoText, textView;
+    TextView name,userName, textView;
     ImageView leftArrow, rightArrow;
     Button bLogout, bDetails, bDB;
     Student student, patient;
@@ -56,6 +56,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     String strBuilder;
     Animation Blink;
     int animationThreshold=10;
+    boolean startRead=false;
 
 
    /* public UserDisplay(Student student){
@@ -76,26 +77,41 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
             try {
                 data = new String(arg0, "UTF-8");
 
-                if(strBuilder.length()<22){
-                    // tvAppend(leftReading,"");
-                    strBuilder+=data;
+                if(data!=null && data.length()>0) {
+                    if (data.charAt(0) == 'A') {
+                        startRead = true;
+                    }
                 }
-                else {
+                if(startRead==true) {
+                    if (strBuilder.length() < 22) {
+                        // tvAppend(leftReading,"");
+                        strBuilder += data;
+                    } else {
 
-                    //String leftSide = strBuilder.substring(5);
-                    String newStr=strBuilder.trim();
-                    String appendStr=newStr.substring(18);
-                    String appendStr2=newStr.substring(7,10);
-                    tvAppend(leftReading, appendStr);
-                    tvAppend(rightReading,appendStr2);
-                    strBuilder = "";
+                        //String leftSide = strBuilder.substring(5);
+                        String newStr = strBuilder.trim();
+                        String appendStr = newStr.substring(18);
+                        String appendStr2 = newStr.substring(7, 10);
 
-                    animate(appendStr,appendStr2);
-                    addDataToDB(appendStr, appendStr2);
+                        try{
+                            int leftWeight=Integer.parseInt(appendStr);
+                            int rightWeight=Integer.parseInt(appendStr2);
+                           /* tvAppend(leftReading, appendStr);
+                            tvAppend(rightReading, appendStr2);*/
+                            strBuilder = "";
+
+
+                            animate(appendStr, appendStr2);
+                            addDataToDB(appendStr, appendStr2);
+                        }
+                        catch(NumberFormatException e){
+
+                        }
+
+
+                    }
 
                 }
-
-
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -109,8 +125,14 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     //add data and timestamp to database of user to be able to graph
     public void addDataToDB(String leftRead, String rightRead){
         //convert string data to integer data
-        int leftWeight= Integer.parseInt(leftRead);
-        int rightWeight=Integer.parseInt(rightRead);
+        int leftWeight, rightWeight;
+        try {
+            leftWeight = Integer.parseInt(leftRead);
+            rightWeight = Integer.parseInt(rightRead);
+        }
+        catch(NumberFormatException e){
+            return;
+        }
 
 
         //array list for data
@@ -134,6 +156,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
 
                 //update selected user with usbdata
                 patient.usbdata = json.toString();
+                userRepo.update(patient);
 
             }
             //if already data for user, append new data
@@ -145,6 +168,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
 
                 //update patient with usb data-DELETE LATER-debugging purposes
                 patient.usbdata = json.toString();
+                userRepo.update(patient);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -204,8 +228,14 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     //blinking arrow and sound animation
     public void animate(String appendStr, String appendStr2){
         //convert to integers
-        final int leftWeight= Integer.parseInt(appendStr);
-        final int rightWeight=Integer.parseInt(appendStr2);
+        int leftWeight, rightWeight;
+        try {
+            leftWeight = Integer.parseInt(appendStr);
+            rightWeight = Integer.parseInt(appendStr2);
+        }
+        catch(NumberFormatException e){
+            return;
+        }
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.chord);
 
 
@@ -218,7 +248,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                         leftArrow.clearAnimation();
                         rightArrow.setVisibility(View.VISIBLE);
                         rightArrow.startAnimation(Blink);
-                        infoText.setText("Lean to the right!");
+                       // infoText.setText("Lean to the right!");
                         mp.start();
 
                     }
@@ -234,7 +264,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                         rightArrow.clearAnimation();
                         leftArrow.setVisibility(View.VISIBLE);
                         leftArrow.startAnimation(Blink);
-                        infoText.setText("Lean to the left!");
+                       // infoText.setText("Lean to the left!");
                         mp.start();
 
                     }
@@ -267,14 +297,11 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         userName=(TextView) findViewById(R.id.userName);
         bDetails=(Button) findViewById(R.id.bDetails);
         bLogout=(Button) findViewById(R.id.bLogout);
-        leftReading=(TextView) findViewById(R.id.leftReading);
-        rightReading=(TextView) findViewById(R.id.rightReading);
         leftArrow=(ImageView) findViewById(R.id.leftArrow);
         rightArrow=(ImageView) findViewById(R.id.rightArrow);
 
         leftArrow.setVisibility(View.GONE);
         rightArrow.setVisibility(View.GONE);
-        infoText=(TextView) findViewById(R.id.infoText);
 
         bDetails.setOnClickListener(this);
         bLogout.setOnClickListener(this);
@@ -331,7 +358,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
 
     public void onUSBStop() {
         serialPort.close();
-        tvAppend(leftReading,"\nSerial Connection Closed! \n");
+     //   tvAppend(leftReading,"\nSerial Connection Closed! \n");
     }
 
     private void tvAppend(TextView tv, CharSequence text) {
@@ -350,8 +377,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     @Override
     public void onClick(View v) {
         if(v==findViewById(R.id.bDetails)){
-            //update database with all data
-            userRepo.update(patient);
+
             Intent main=new Intent(getApplicationContext(), UserGraph.class);
             main.putExtra("username", userName.getText());
             startActivity(main);

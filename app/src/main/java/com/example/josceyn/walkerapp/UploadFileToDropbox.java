@@ -18,12 +18,14 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> {
     private DropboxAPI<?> dropbox;
     private String path;
     private Context context;
+    private Student patient;
 
     public UploadFileToDropbox(Context context, DropboxAPI<?> dropbox,
-                               String path) {
+                               String path, Student patient) {
         this.context = context.getApplicationContext();
         this.dropbox = dropbox;
         this.path = path;
+        this.patient=patient;
     }
 
     @Override

@@ -49,9 +49,14 @@ public class AdminView extends ListActivity implements android.view.View.OnClick
                 public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
                     String username=studentList.get(position).get("username").toString();
 
-                    Intent objIndent = new Intent(getApplicationContext(),AdminGraph.class);
-                    objIndent.putExtra("username", username);
-                    startActivity(objIndent);
+                    Intent objIntent = new Intent(getApplicationContext(),AdminGraph.class);
+
+                    Bundle extras = new Bundle();
+                    extras.putString("patient_username",username);
+                    extras.putString("admin_username",student.username);
+                    objIntent.putExtras(extras);
+
+                    startActivity(objIntent);
                 }
             });
             // ListAdapter adapter = new SimpleAdapter( AdminView.this,studentList, R.layout.view_student_entry, new String[] { "id","name"}, new int[] {R.id.student_Id, R.id.student_name});
