@@ -224,65 +224,6 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         //Line Graph of sum
         ArrayList<Entry> lineEntries=new ArrayList<>();
 
-
-
-/*
-
-        if(patientDataLeft.size()<=10) {
-            for (int i = 0; i < patientDataLeft.size(); i++) {
-                barEntry = new BarEntry(patientDataLeft.get(i), leftCounter);
-                entries.add(barEntry);
-                labels.add(timeStamps.get(i).toString());
-                leftCounter++;
-
-            }
-
-
-            for (int i = 0; i < patientDataRight.size(); i++) {
-                barEntry = new BarEntry(patientDataRight.get(i), rightCounter);
-                entries2.add(barEntry);
-                labels.add(timeStamps.get(i).toString());
-                rightCounter++;
-            }
-        }
-        else if(patientDataLeft.size()>10 && patientDataLeft.size()<20){
-            for (int i = 0; i < 10; i++) {
-                barEntry = new BarEntry(patientDataLeft.get(i), leftCounter);
-                entries.add(barEntry);
-                labels.add(timeStamps.get(i).toString());
-                leftCounter++;
-            }
-
-
-            for (int i = 0; i < 10; i++) {
-                barEntry = new BarEntry(patientDataRight.get(i), rightCounter);
-                entries2.add(barEntry);
-                labels.add(timeStamps.get(i).toString());
-                rightCounter++;
-            }
-        }
-        else{
-            int incre=patientDataLeft.size()/8;
-            System.out.println("INCREM= "+ incre);
-
-
-            for (int i = 0; i < patientDataLeft.size(); i+=incre) {
-
-                barEntry = new BarEntry(patientDataLeft.get(i),leftCounter);
-                entries.add(barEntry);
-                labels.add(timeStamps.get(i).toString());
-                leftCounter++;
-            }
-
-
-            for (int i = 0; i < patientDataRight.size(); i+=incre) {
-                barEntry = new BarEntry(patientDataRight.get(i), rightCounter);
-                entries2.add(barEntry);
-                labels.add(timeStamps.get(i).toString());
-                rightCounter++;
-            }
-        }*/
-
         int x=0;
         for(int i=dataStart; i<patientDataLeft.size(); i++){
             if(x==5){
@@ -409,10 +350,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        //go back
 
-        Button button = (Button) v;
-        startActivity(new Intent(getApplicationContext(), AdminView.class));
 
         int position;
         //if logout, bring back to login page

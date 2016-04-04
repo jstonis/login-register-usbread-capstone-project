@@ -43,7 +43,7 @@ import android.view.animation.AnimationUtils;
 public class UserDisplay extends Activity implements View.OnClickListener, AnimationListener{
 
     public final String ACTION_USB_PERMISSION = "com.example.josceyn.walkerapp.USB_PERMISSION";
-    TextView name,userName, textView;
+    TextView name,userName, textView, leftReading, rightReading, errorCheck;
     ImageView leftArrow, rightArrow;
     Button bLogout, bDetails, bDB;
     Student student, patient;
@@ -69,15 +69,124 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     private ListView mListView;
     private TextView mProgressBarTitle;
     private ProgressBar mProgressBar;
+    String str=new String();
+    String test1=new String();
+    String test2=new String();
+    String appendStr=new String();
+    String appendStr2=new String();
 
     UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() { //Defining a Callback which triggers whenever data is read.
         @Override
         public void onReceivedData(byte[] arg0) {
+
             String data = null;
             try {
                 data = new String(arg0, "UTF-8");
+                data=data.replace("\n","");
 
-                if(data!=null && data.length()>0) {
+                str=str+data;
+                tvAppend(errorCheck,str);
+                if(str.contains("A")){
+                    int aIndex=str.indexOf('A');
+                    test1=str.substring(aIndex);
+                   // System.out.println("finds wA string"test1);
+                    if(test1.length()>6){
+
+                        StringBuilder testtest=new StringBuilder();
+                        testtest.append(test1.charAt(3));
+                        testtest.append(test1.charAt(4));
+                        testtest.append(test1.charAt(5));
+                       // tvAppend(errorCheck, testtest.toString() + " SIZE IS: " + testtest.length());
+                      //  appendStr=Integer.parseInt(testtest.toString());
+                        appendStr=testtest.toString();
+
+                    }
+                    else if(test1.length()==6){
+                      //  tvAppend(errorCheck,test1);
+                        StringBuilder testtest=new StringBuilder();
+                        testtest.append(test1.charAt(3));
+                        testtest.append(test1.charAt(4));
+                        testtest.append(test1.charAt(5));
+                      //  appendStr=Integer.parseInt(testtest.toString());
+                        appendStr=testtest.toString();
+                    }
+
+                }
+                if(str.contains("B")){
+                    int bIndex=str.indexOf('B');
+                    test2=str.substring(bIndex);
+                    if(test2.length()>6){
+                        StringBuilder testtest=new StringBuilder();
+                        testtest.append(test2.charAt(3));
+                        testtest.append(test2.charAt(4));
+                        testtest.append(test2.charAt(5));
+                     //   appendStr2=Integer.parseInt(testtest.toString());
+                        appendStr2=testtest.toString();
+
+
+                        try{
+                            // int leftWeight=Integer.parseInt(appendStr);
+                            // int rightWeight=Integer.parseInt(appendStr2);
+                            tvAppend(leftReading, appendStr.toString());
+                            tvAppend(rightReading, appendStr2.toString());
+                            //  strBuilder = "";
+
+
+                            animate(appendStr.toString(), appendStr2.toString());
+                            addDataToDB(appendStr.toString(), appendStr2.toString());
+                        }
+                        catch(NumberFormatException e){
+                            //  startRead=false;
+
+                            //  return;
+                            // errorCheck.setText(strBuilder);
+                            //  strBuilder="";
+                          /*  byte test[]={Byte.parseByte("1")};
+                            serialPort.write(test);*/
+                        }
+
+
+
+
+                        str=test2.substring(6);
+                    }
+                    else if(test2.length()==6){
+                        StringBuilder testtest=new StringBuilder();
+                        testtest.append(test2.charAt(3));
+                        testtest.append(test2.charAt(4));
+                        testtest.append(test2.charAt(5));
+                      //  appendStr2=Integer.parseInt(testtest.toString());
+                        appendStr2=testtest.toString();
+
+
+                        try{
+                            // int leftWeight=Integer.parseInt(appendStr);
+                            // int rightWeight=Integer.parseInt(appendStr2);
+                            tvAppend(leftReading, appendStr.toString());
+                            tvAppend(rightReading, appendStr2.toString());
+                            //  strBuilder = "";
+
+
+                            animate(appendStr.toString(), appendStr2.toString());
+                            addDataToDB(appendStr.toString(), appendStr2.toString());
+                        }
+                        catch(NumberFormatException e){
+                            //  startRead=false;
+
+                            //  return;
+                            // errorCheck.setText(strBuilder);
+                            //  strBuilder="";
+                          /*  byte test[]={Byte.parseByte("1")};
+                            serialPort.write(test);*/
+                        }
+
+
+
+                        str="";
+                    }
+                }
+
+               /* if(data!=null && data.length()>0) {
                     if (data.charAt(0) == 'A') {
                         startRead = true;
                     }
@@ -89,29 +198,68 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                     } else {
 
                         //String leftSide = strBuilder.substring(5);
-                        String newStr = strBuilder.trim();
+                      //  String newStr = strBuilder.trim();
+                        String newStr=strBuilder.substring(0,21);
+
+                        if(strBuilder.length()>21) {
+
+                            String test = strBuilder.substring(21);
+                            StringBuilder sb=new StringBuilder(test);
+                            for(int i=0; i<sb.length(); i++){
+                                if(test.charAt(i)=='\n'){
+                                    tvAppend(errorCheck,"YES!!");
+                                    sb.deleteCharAt(i);
+                                }
+                                else if(test.charAt(i)=='\\'){
+                                    tvAppend(errorCheck,"UH OH");
+                                }
+
+                            }
+                            test=sb.toString();
+
+                            // strBuilder=test;
+                            String testTrim = test.trim();
+                            if(testTrim.contains("\n")){
+                                tvAppend(errorCheck,"CONTAINS NL "+testTrim);
+                            }
+                            else {
+                                tvAppend(errorCheck, testTrim);
+                            }
+                            strBuilder = testTrim;
+                        }
+                        else{
+                            strBuilder="";
+                        }
                         String appendStr = newStr.substring(18);
                         String appendStr2 = newStr.substring(7, 10);
+*/
 
-                        try{
-                            int leftWeight=Integer.parseInt(appendStr);
-                            int rightWeight=Integer.parseInt(appendStr2);
-                           /* tvAppend(leftReading, appendStr);
-                            tvAppend(rightReading, appendStr2);*/
-                            strBuilder = "";
+                       /* try{
+                           // int leftWeight=Integer.parseInt(appendStr);
+                           // int rightWeight=Integer.parseInt(appendStr2);
+                            tvAppend(leftReading, appendStr.toString());
+                            tvAppend(rightReading, appendStr2.toString());
+                          //  strBuilder = "";
 
 
-                            animate(appendStr, appendStr2);
-                            addDataToDB(appendStr, appendStr2);
+                            animate(appendStr.toString(), appendStr2.toString());
+                            addDataToDB(appendStr.toString(), appendStr2.toString());
                         }
                         catch(NumberFormatException e){
+                          //  startRead=false;
 
+                          //  return;
+                           // errorCheck.setText(strBuilder);
+                         //  strBuilder="";
+                          *//*  byte test[]={Byte.parseByte("1")};
+                            serialPort.write(test);*//*
                         }
+*/
 
 
-                    }
+                //    }
 
-                }
+             //   }
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -184,13 +332,19 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                     connection = usbManager.openDevice(device);
                     serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
                     if (serialPort != null) {
-                        if (serialPort.open()) { //Set Serial Connection Parameters.
+                        //if(serialPort.open()){
+                        if (serialPort.syncOpen()) { //Set Serial Connection Parameters.
                             serialPort.setBaudRate(9600);
                             serialPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
                             serialPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
                             serialPort.setParity(UsbSerialInterface.PARITY_NONE);
                             serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);
-                            serialPort.read(mCallback);
+                            byte [] syncArray=new byte[13];
+                            serialPort.syncRead(syncArray,0);
+
+
+                           // serialPort.read(mCallback);
+
 
 
                            /* final TextView ftv = leftReading;
@@ -299,6 +453,9 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         bLogout=(Button) findViewById(R.id.bLogout);
         leftArrow=(ImageView) findViewById(R.id.leftArrow);
         rightArrow=(ImageView) findViewById(R.id.rightArrow);
+        leftReading=(TextView) findViewById(R.id.leftReading);
+        rightReading=(TextView) findViewById(R.id.rightReading);
+        errorCheck=(TextView) findViewById(R.id.errorCheck);
 
         leftArrow.setVisibility(View.GONE);
         rightArrow.setVisibility(View.GONE);
@@ -377,8 +534,9 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     @Override
     public void onClick(View v) {
         if(v==findViewById(R.id.bDetails)){
+            unregisterReceiver(broadcastReceiver);
 
-            Intent main=new Intent(getApplicationContext(), UserGraph.class);
+            Intent main=new Intent(this, UserGraph.class);
             main.putExtra("username", userName.getText());
             startActivity(main);
         }

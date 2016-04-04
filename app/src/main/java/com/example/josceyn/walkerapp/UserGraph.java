@@ -72,6 +72,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
         bPreviousSet.setOnClickListener(this);
         bNextSet.setOnClickListener(this);
         bSwitchGraph.setOnClickListener(this);
+        bBack.setOnClickListener(this);
 
         patientDataLeft=new ArrayList();
         patientDataRight=new ArrayList();
@@ -313,7 +314,10 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view){
 
         if(view==findViewById(R.id.btnBack)) {
-            startActivity(new Intent(getApplicationContext(), UserDisplay.class));
+
+            Intent intent = new Intent(this,UserDisplay.class);
+            intent.putExtra("user_name",user.username);
+            startActivity(intent);
         }
         else if(view==findViewById(R.id.bPreviousSet)){
             for(int i=5; i>0; i--){
