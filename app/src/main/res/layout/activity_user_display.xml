@@ -140,6 +140,15 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show Values"
+            android:id="@+id/showValues"
+            android:layout_alignTop="@+id/bLogout"
+            android:layout_centerHorizontal="true"
+            android:checked="false" />
+
 
     </RelativeLayout>
 
