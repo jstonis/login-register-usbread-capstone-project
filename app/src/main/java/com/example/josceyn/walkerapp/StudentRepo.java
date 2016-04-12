@@ -20,6 +20,7 @@ public class StudentRepo {
     public StudentRepo(Context context) {
         dbHelper = new DBHelper(context);
     }
+    public StudentRepo(){}
 
     public int insert(Student student) {
 
@@ -34,6 +35,7 @@ public class StudentRepo {
         values.put(Student.KEY_admin, student.admin);
         values.put(Student.KEY_comments, student.comments);
         values.put(Student.KEY_usbdata, student.usbdata);
+        values.put(Student.KEY_animationThreshold, student.animationThreshold);
 
         // Inserting Row
         long student_Id = db.insert(Student.TABLE, null, values);
@@ -63,6 +65,7 @@ public class StudentRepo {
         values.put(Student.KEY_PT, student.pt);
         values.put(Student.KEY_usbdata, student.usbdata);
         values.put(Student.KEY_comments, student.comments);
+        values.put(Student.KEY_animationThreshold, student.animationThreshold);
 
         // It's a good practice to use parameter ?, instead of concatenate string
 
@@ -114,6 +117,7 @@ public class StudentRepo {
                 Student.KEY_admin + "," +
                 Student.KEY_usbdata + "," +
                 Student.KEY_comments + "," +
+                Student.KEY_animationThreshold +"," +
                 " FROM " + Student.TABLE
                 + " WHERE " +
                 Student.KEY_ID + "=?";// It's a good practice to use parameter ?, instead of concatenate string
@@ -133,6 +137,7 @@ public class StudentRepo {
                 student.admin =cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
                 student.usbdata=cursor.getString(cursor.getColumnIndex(Student.KEY_usbdata));
                 student.comments=cursor.getString(cursor.getColumnIndex(Student.KEY_comments));
+                student.animationThreshold=cursor.getInt(cursor.getColumnIndex(Student.KEY_animationThreshold));
 
             } while (cursor.moveToNext());
         }
@@ -151,7 +156,8 @@ public class StudentRepo {
                 Student.KEY_PT + "," +
                 Student.KEY_admin + "," +
                 Student.KEY_comments + "," +
-                Student.KEY_usbdata +
+                Student.KEY_usbdata + "," +
+                Student.KEY_animationThreshold +
                 " FROM " + Student.TABLE
                 + " WHERE " +
                 Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
@@ -171,6 +177,7 @@ public class StudentRepo {
                 student.admin =cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
                 student.usbdata=cursor.getString(cursor.getColumnIndex(Student.KEY_usbdata));
                 student.comments=cursor.getString(cursor.getColumnIndex(Student.KEY_comments));
+                student.animationThreshold=cursor.getInt(cursor.getColumnIndex(Student.KEY_animationThreshold));
             } while (cursor.moveToNext());
         }
 
@@ -190,7 +197,8 @@ public class StudentRepo {
                 Student.KEY_PT + "," +
                 Student.KEY_admin + "," +
                 Student.KEY_comments + "," +
-                Student.KEY_usbdata +
+                Student.KEY_usbdata + "," +
+                Student.KEY_animationThreshold +
                 " FROM " + Student.TABLE
                 + " WHERE " +
                 Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
@@ -210,6 +218,7 @@ public class StudentRepo {
                 student.admin =cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
                 student.usbdata=cursor.getString(cursor.getColumnIndex(Student.KEY_usbdata));
                 student.comments=cursor.getString(cursor.getColumnIndex(Student.KEY_comments));
+                student.animationThreshold=cursor.getInt(cursor.getColumnIndex(Student.KEY_animationThreshold));
             } while (cursor.moveToNext());
         }
 
@@ -269,7 +278,8 @@ public class StudentRepo {
                 Student.KEY_admin + "," +
                 Student.KEY_comments + "," +
                 Student.KEY_usbdata + "," +
-                Student.KEY_password +
+                Student.KEY_password + "," +
+                Student.KEY_animationThreshold +
                 " FROM " + Student.TABLE
                 + " WHERE " +
                 Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
@@ -283,6 +293,7 @@ public class StudentRepo {
                 student.name=cursor.getString(cursor.getColumnIndex(Student.KEY_name));
                 student.admin=cursor.getInt(cursor.getColumnIndex(Student.KEY_admin));
                 student.pt=cursor.getString(cursor.getColumnIndex(Student.KEY_admin));
+                student.animationThreshold=cursor.getInt(cursor.getColumnIndex(Student.KEY_animationThreshold));
                 cursor.close();
 
             } else {
@@ -314,6 +325,7 @@ public class StudentRepo {
         return list;
 
     }
+
     //get timestamp
     public static String getCurrentTimeStamp(){
         try{

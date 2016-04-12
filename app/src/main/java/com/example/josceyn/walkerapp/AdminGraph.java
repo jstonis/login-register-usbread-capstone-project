@@ -40,24 +40,27 @@ import com.dropbox.client2.session.TokenPair;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 public class AdminGraph extends Activity implements View.OnClickListener {
 
     private DropboxAPI<AndroidAuthSession> dropbox;
-    private final static String FILE_DIR = "/DropboxSample/";
+    private static String FILE_DIR = "/SmartWalkerData/";
     private final static String DROPBOX_NAME = "dropbox_prefs";
     private final static String ACCESS_KEY = "66lfl9cvrzq7gfv";
     private final static String ACCESS_SECRET = "e8f91jvdg0brjm3";
     private boolean isLoggedIn;
     EditText adminComment;
-    Button bLogout, bSubmit, bEdit, bSwitchGraph, bPreviousSet, bNextSet;
+    Button bLogout, bSubmit, bEdit;
     ImageButton bDropbox;
     Student selectedUser;
     StudentRepo repo;
@@ -65,9 +68,10 @@ public class AdminGraph extends Activity implements View.OnClickListener {
     ArrayList<Float> patientDataLeft, patientDataRight;
     ArrayList timeStamps, items, adminComments;
     TextView usernameTextView;
-    BarChart barChart;
-    LineChart lineChart;
-    int graphView, dataStart=0, dataEnd=5;
+    //BarChart barChart;
+    //LineChart lineChart;
+    PieChart chart;
+    int graphView, dataStart=0, dataEnd=5, leftCounter=0, rightCounter=0, animationThreshold;
     RadioGroup graphType;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,22 +84,38 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         Bundle extras = intent.getExtras();
         String username=extras.getString("patient_username");
         String admin_username = extras.getString("admin_username");
+
         selectedUser=repo.getStudentByUsername(username);
+        animationThreshold=selectedUser.animationThreshold;
 
         //initialize username textview
         usernameTextView=(TextView) findViewById(R.id.userName);
         usernameTextView.setText(username);
 
 
-        //initialize bar/line graph for users data
+        //initialize pie graph for users data
+        chart=(PieChart)findViewById(R.id.chart);
+        //set percent values
+        chart.setUsePercentValues(true);
 
-        bNextSet=(Button) findViewById(R.id.bNextSet);
+        // enable hole and configure
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColorTransparent(true);
+        chart.setHoleRadius(7);
+        chart.setTransparentCircleRadius(30);
+
+        // enable rotation of the chart by touch
+        chart.setRotationAngle(0);
+        chart.setRotationEnabled(true);
+
+
+      /*  bNextSet=(Button) findViewById(R.id.bNextSet);
         bPreviousSet=(Button) findViewById(R.id.bPreviousSet);
-        bSwitchGraph=(Button) findViewById(R.id.bSwitchGraph);
-        barChart=(BarChart) findViewById(R.id.chart);
-        lineChart=(LineChart) findViewById(R.id.lineChart);
+        bSwitchGraph=(Button) findViewById(R.id.bSwitchGraph);*/
+       /* barChart=(BarChart) findViewById(R.id.chart);
+        lineChart=(LineChart) findViewById(R.id.lineChart);*/
         //set default line chart invisible
-        lineChart.setVisibility(View.INVISIBLE);
+      //  lineChart.setVisibility(View.INVISIBLE);
 
 
 
@@ -130,11 +150,13 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         bSubmit.setOnClickListener(this);
         bEdit.setOnClickListener(this);
         bDropbox.setOnClickListener(this);
-        bPreviousSet.setOnClickListener(this);
+       /* bPreviousSet.setOnClickListener(this);
         bNextSet.setOnClickListener(this);
         bSwitchGraph.setOnClickListener(this);
-
+*/
         loggedIn(false);
+
+
 
         //graph patient's data
         if(selectedUser.usbdata!=null){
@@ -179,6 +201,12 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                 //check month, day, year
                 Calendar c=Calendar.getInstance();
 
+                System.out.println("MONTH: "+c.get(Calendar.MONTH));
+                System.out.println("DAY: "+c.get(Calendar.DAY_OF_MONTH));
+                System.out.println("YEAR: "+c.get(Calendar.YEAR));
+                System.out.println("MONTH IN TIMESTAMP: "+ temp[0].substring(5,7));
+                System.out.println("DAY IN TIMESTAMP: "+ temp[0].substring(8,10));
+                System.out.println("YEAR IN TIMESTAMP: "+ temp[0].substring(0,4));
                 if(Integer.parseInt(temp[0].substring(5,7))==c.get(Calendar.MONTH)+1 && Integer.parseInt(temp[0].substring(8,10))==c.get(Calendar.DAY_OF_MONTH) && Integer.parseInt(temp[0].substring(0,4))==c.get(Calendar.YEAR)){
                     timeStamps.add(temp[0]);
                     patientDataRight.add(Float.parseFloat(temp[1]));
@@ -213,26 +241,26 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         }
     }
     public void graph(){
-        //bar chart data
-        BarData data;
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        BarEntry barEntry, barEntry2;
-        ArrayList<BarEntry> entries2 = new ArrayList<>();
-        ArrayList<String> labels = new ArrayList<String>();
-        int leftCounter=0, rightCounter=0;
-
-        //Line Graph of sum
-        ArrayList<Entry> lineEntries=new ArrayList<>();
-
         int x=0;
         for(int i=dataStart; i<patientDataLeft.size(); i++){
-            if(x==5){
+           /* if(x==5){
                 break;
+            }*/
+            if(Math.abs(patientDataLeft.get(i)-patientDataRight.get(i))>animationThreshold){
+                if(patientDataRight.get(i)>patientDataLeft.get(i)){
+                    rightCounter++;
+                }
+                else{
+                    leftCounter++;
+                }
             }
-            barEntry=new BarEntry(patientDataLeft.get(i),x);
+            System.out.println("ANIMATION THRESHOLD: "+animationThreshold);
+            System.out.println("RIGHT COUNTER: "+rightCounter);
+            System.out.println("LEFT COUNTER: " + leftCounter);
+            /*barEntry=new BarEntry(patientDataLeft.get(i),x);
             entries.add(barEntry);
             barEntry2=new BarEntry(patientDataRight.get(i),x);
-            entries2.add(barEntry2);
+            entries2.add(barEntry2);*/
 
             //get time
         /*    SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -254,24 +282,54 @@ public class AdminGraph extends Activity implements View.OnClickListener {
             int minute=calendar.get(Calendar.MINUTE);
 
             String timeString=hour+":"+minute;*/
-            String timeString=timeStamps.get(i).toString().substring(11,13)+":"+timeStamps.get(i).toString().substring(14,16)+":"+timeStamps.get(i).toString().substring(17,19);
+         /*   String timeString=timeStamps.get(i).toString().substring(11,13)+":"+timeStamps.get(i).toString().substring(14,16)+":"+timeStamps.get(i).toString().substring(17,19);
             labels.add(timeString);
 
 
             ///add line graph points
             float totalOfSides=(patientDataLeft.get(i) + patientDataRight.get(i));
             lineEntries.add(new Entry(totalOfSides,x));
-            x++;
+            x++;*/
         }
 
+        double leftPercent=((double)leftCounter/((double)leftCounter+(double)rightCounter))*100.00;
+        double rightPercent=((double)rightCounter/((double)leftCounter+(double)rightCounter))*100.00;
+        System.out.println("left percent: "+leftPercent);
+        System.out.println("right percent: " + rightPercent);
 
-        //initialize line data set
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry((int)leftPercent, 0));
+        entries.add(new Entry((int) rightPercent, 1));
+
+
+
+        PieDataSet dataset = new PieDataSet(entries, "Percentage of Leaning on Each Side");
+
+
+// creating labels
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("Left Side");
+        labels.add("Right Side");
+
+
+        PieData data = new PieData(labels, dataset); // initialize Piedata
+        data.setValueTextSize(15f);
+        chart.setData(data); //set data into chart
+
+
+        chart.setDescription("Weight threshold met on each side");  // set the description
+        dataset.setColors(ColorTemplate.COLORFUL_COLORS); // set the color
+
+        chart.animateY(5000);
+
+
+      /*  //initialize line data set
         LineDataSet dataSetLine=new LineDataSet(lineEntries,"Total Pounds");
         dataSetLine.setColors(ColorTemplate.COLORFUL_COLORS);
 
         BarDataSet barDataSet1=new BarDataSet(entries,"Left Side");
         barDataSet1.setColor(Color.rgb(0, 155, 0));
-        // barDataSet1.setBarSpacePercent(5f);
+       // barDataSet1.setBarSpacePercent(5f);
         BarDataSet barDataSet2=new BarDataSet(entries2, "Right Side");
         barDataSet2.setColor(Color.rgb(0, 0, 155));
 
@@ -288,29 +346,29 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
 
         //NEED TO FIX
-        /*labels.add(timeStamps.get(0).toString());
+        *//*labels.add(timeStamps.get(0).toString());
         for (int j = 1; j < timeStamps.size() - 1; j++){
             labels.add(j,"");
         }
-        labels.add(timeStamps.size() - 1, timeStamps.get(timeStamps.size() - 1).toString());*/
+        labels.add(timeStamps.size() - 1, timeStamps.get(timeStamps.size() - 1).toString());*//*
 
 
         data = new BarData(labels, dataSets);
-        barChart.setData(data);
+        barChart.setData(data);*/
 
         //set description based on graph view
         if(graphView==R.id.rButtonToday) {
-            barChart.setDescription("Today");
+            chart.setDescription("Today");
         }
         else{
-            barChart.setDescription("Overall");
+            chart.setDescription("Overall");
         }
 
 
-        //animate graph results
+       /* //animate graph results
         barChart.animateXY(2000, 2000);
         barChart.invalidate();
-
+*/
 
         //  LineDataSet dataset = new LineDataSet(entries, "Unequal Weight Distribution");
 
@@ -322,7 +380,6 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
         lineChart.setData(data);
         lineChart.animateY(5000);*/
-
     }
 
     @Override
@@ -380,7 +437,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                 JSONObject json2 = new JSONObject();
                 if (newComment) {
                     position = 0;
-                    comments.add(position, repo.getCurrentTimeStamp() + ":" + adminComment.getText());
+                    comments.add(position, repo.getCurrentTimeStamp() + "," + adminComment.getText());
 
                     try {
                         json2.put("comments", new JSONArray(comments));
@@ -435,11 +492,11 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                 dropbox.getSession().startAuthentication(AdminGraph.this);
             }
 
-
+            FILE_DIR=FILE_DIR+selectedUser.name+"/";
             UploadFileToDropbox upload = new UploadFileToDropbox(this, dropbox,
                     FILE_DIR, selectedUser);
             upload.execute();
-        } else if (v == findViewById(R.id.bPreviousSet)) {
+        } /*else if (v == findViewById(R.id.bPreviousSet)) {
             for (int i = 5; i > 0; i--) {
                 if (dataStart - i >= 0) {
                     dataStart -= i;
@@ -455,12 +512,12 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                     dataStart += i;
                     break;
                 }
-            }
+            }*/
 
             getGraphData();
             graph();
 
-        }
+
     }
     public void loggedIn(boolean isLogged) {
         isLoggedIn = isLogged;

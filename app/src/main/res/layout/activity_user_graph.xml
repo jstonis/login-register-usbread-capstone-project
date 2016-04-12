@@ -28,6 +28,7 @@
                 android:layout_gravity="center"
                 android:gravity="end|center"
                 android:text="User's Name"
+                android:textStyle="bold"
                 android:textSize="19dp"
                 android:paddingTop="5dp"/>
 
@@ -43,20 +44,20 @@
             android:layout_gravity="right|center_vertical"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true" />
-        <com.github.mikephil.charting.charts.BarChart
+        <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_below="@+id/radioGroup"
             android:layout_above="@+id/bLogout" />
-        <com.github.mikephil.charting.charts.LineChart
+       <!-- <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/lineChart"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_below="@+id/radioGroup"
-            android:layout_above="@+id/bLogout" />
+            android:layout_above="@+id/bLogout" />-->
 
-        <TextView
+        <!--<TextView
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:id="@+id/adminComment"
@@ -68,7 +69,7 @@
             android:layout_weight="1"
             android:ellipsize="none"
             android:maxLines="100"
-            android:scrollHorizontally="false" />
+            android:scrollHorizontally="false" />-->
 
         <Button
 
@@ -110,15 +111,24 @@
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            android:layout_width="169dp"
             android:layout_height="wrap_content"
-            android:text="Next Set"
-            android:id="@+id/bNextSet"
-            android:layout_below="@+id/header"
-            android:layout_alignEnd="@+id/bLogout"
-            android:layout_above="@+id/chart" />
+            android:text="Comments"
+            android:id="@+id/bComments"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
 
-        <Button
+        <!-- <Button
+             style="?android:attr/buttonStyleSmall"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Next Set"
+             android:id="@+id/bNextSet"
+             android:layout_below="@+id/header"
+             android:layout_alignEnd="@+id/bLogout"
+             android:layout_above="@+id/chart" />-->
+
+    <!--    <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -126,9 +136,9 @@
             android:id="@+id/bPreviousSet"
             android:layout_below="@+id/header"
             android:layout_toStartOf="@+id/bNextSet"
-            android:layout_above="@+id/chart" />
+            android:layout_above="@+id/chart" />-->
 
-        <Button
+ <!--       <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -136,7 +146,7 @@
             android:id="@+id/bSwitchGraph"
             android:layout_below="@+id/header"
             android:layout_toStartOf="@+id/bPreviousSet"
-            android:layout_alignBottom="@+id/bPreviousSet" />
+            android:layout_alignBottom="@+id/bPreviousSet" />-->
 
 
     </RelativeLayout>

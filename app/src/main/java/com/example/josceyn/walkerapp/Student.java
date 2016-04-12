@@ -15,6 +15,7 @@ public class Student {
     public static final String KEY_age = "age";
     public static final String KEY_comments="comments";
     public static final String KEY_usbdata="usbdata";
+    public static final String KEY_animationThreshold="animationThreshold";
 
     // property help us to keep data
     public int student_ID;
@@ -27,4 +28,5 @@ public class Student {
     public int age;
     public String usbdata;
     public String comments;
+    public int animationThreshold;
 }

@@ -11,6 +11,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,25 +25,30 @@ import java.util.GregorianCalendar;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 
 public class UserGraph extends AppCompatActivity implements View.OnClickListener {
 
-    Button bLogout, bNextSet, bPreviousSet, bBack, bSwitchGraph;
-    TextView adminComment, userName;
+    Button bLogout, bNextSet, bPreviousSet, bBack, bSwitchGraph, bComments;
+    //TextView adminComment;
+    TextView userName;
     Student user;
     ArrayList<Float> patientDataLeft, patientDataRight;
     ArrayList timeStamps, items, adminComments;
     RadioGroup graphType;
-    int graphView, dataStart=0, dataEnd=5;
+    int graphView, dataStart=0, dataEnd=5, leftCounter=0, rightCounter=0, animationThreshold;
     Boolean showBarGraph=true;
+    PieChart chart;
     BarChart barChart;
     LineChart lineChart;
 
@@ -54,25 +60,42 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
 
         StudentRepo userRepo=new StudentRepo(this);
         bLogout=(Button) findViewById(R.id.bLogout);
-        adminComment=(TextView) findViewById(R.id.adminComment);
+       // adminComment=(TextView) findViewById(R.id.adminComment);
         userName=(TextView) findViewById(R.id.userName);
-        bNextSet=(Button) findViewById(R.id.bNextSet);
-        bPreviousSet=(Button) findViewById(R.id.bPreviousSet);
+       // bNextSet=(Button) findViewById(R.id.bNextSet);
+       // bPreviousSet=(Button) findViewById(R.id.bPreviousSet);
         bBack=(Button) findViewById(R.id.btnBack);
-        bSwitchGraph=(Button) findViewById(R.id.bSwitchGraph);
-        barChart=(BarChart) findViewById(R.id.chart);
-        lineChart=(LineChart) findViewById(R.id.lineChart);
+      //  bSwitchGraph=(Button) findViewById(R.id.bSwitchGraph);
+        chart=(PieChart) findViewById(R.id.chart);
+        bComments=(Button) findViewById(R.id.bComments);
+      //  barChart=(BarChart) findViewById(R.id.chart);
+       // lineChart=(LineChart) findViewById(R.id.lineChart);
         //set default line chart invisible
-        lineChart.setVisibility(View.INVISIBLE);
+//        lineChart.setVisibility(View.INVISIBLE);
+
+//set percent values
+        chart.setUsePercentValues(true);
+
+
+        // enable hole and configure
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColorTransparent(true);
+        chart.setHoleRadius(7);
+        chart.setTransparentCircleRadius(30);
+
+        // enable rotation of the chart by touch
+        chart.setRotationAngle(0);
+        chart.setRotationEnabled(true);
 
 
 
         //set on click listeners
         bLogout.setOnClickListener(this);
-        bPreviousSet.setOnClickListener(this);
-        bNextSet.setOnClickListener(this);
-        bSwitchGraph.setOnClickListener(this);
+       // bPreviousSet.setOnClickListener(this);
+       // bNextSet.setOnClickListener(this);
+        //bSwitchGraph.setOnClickListener(this);
         bBack.setOnClickListener(this);
+        bComments.setOnClickListener(this);
 
         patientDataLeft=new ArrayList();
         patientDataRight=new ArrayList();
@@ -87,7 +110,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
                 patientDataLeft.clear();
                 patientDataRight.clear();
                 timeStamps.clear();
-
+                leftCounter=0; rightCounter=0;
                 getGraphData();
                 graph();
 
@@ -97,15 +120,49 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
         
         Intent intent=getIntent();
        // String username=intent.getStringExtra("username");
-        String test=intent.getStringExtra("username");
-        userName.setText(intent.getStringExtra("username"));
+        Bundle extras = intent.getExtras();
+       /* String username=extras.getString("patient_username");
+        String admin_username = extras.getString("admin_username");*/
+
+
+       // String test=intent.getStringExtra("username");
+        animationThreshold=Integer.parseInt(extras.getString("animationThreshold"));
+        String test=extras.getString("username");
+        userName.setText(extras.getString("username"));
         user=userRepo.getStudentByUsername(test);
 
         System.out.println("USERNAME: " + test);
-        if(user.usbdata==null){
+        if(user.usbdata==null) {
             System.out.println("USB DATA IS NULL");
+
+
+            ArrayList usbData = new ArrayList();
+            //used to convert string data from db to arraylist
+            JSONObject jsonTest = null;
+            try {
+                //if new data, do this
+                user.usbdata = "";
+                //add to first index of array
+                usbData.add(0, userRepo.getCurrentTimeStamp() + "," + 2 + "," + 30);
+
+
+                //instantiate JSONObject
+                jsonTest = new JSONObject();
+                jsonTest.put("usbdata", new JSONArray(usbData));
+
+                //update selected user with usbdata
+                user.usbdata = jsonTest.toString();
+                userRepo.update(user);
+
+
+                //if already data for user, append new data
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-        adminComments=new ArrayList();
+            adminComments=new ArrayList();
 
         items=new ArrayList();
         adminComments=new ArrayList();
@@ -114,7 +171,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
             if(user.comments!=null){
                 JSONObject json=new JSONObject(user.comments);
                 adminComments=userRepo.getArrayList(json.optJSONArray("comments"));
-                adminComment.setText(adminComments.get(adminComments.size()-1).toString());
+              //  adminComment.setText(adminComments.get(adminComments.size()-1).toString());
             }
 
 
@@ -123,6 +180,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
                 System.out.println("Users name: "+user.name);
                 JSONObject json2=new JSONObject(user.usbdata);
                 items=userRepo.getArrayList(json2.optJSONArray("usbdata"));
+                leftCounter=0; rightCounter=0;
                 getGraphData();
                 graph();
             }
@@ -133,13 +191,13 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
         }
 
         if(adminComments.size()!=0) {
-            adminComment.setText(adminComments.get(adminComments.size() - 1).toString());
+         //   adminComment.setText(adminComments.get(adminComments.size() - 1).toString());
         }
 
 
     }
     public void graph(){
-
+/*
         //bar chart data
         BarData data;
         ArrayList<BarEntry> entries = new ArrayList<>();
@@ -149,7 +207,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
         int leftCounter=0, rightCounter=0;
 
         //Line Graph of sum
-        ArrayList<Entry> lineEntries=new ArrayList<>();
+        ArrayList<Entry> lineEntries=new ArrayList<>();*/
 
 
 
@@ -212,13 +270,24 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
 
         int x=0;
         for(int i=dataStart; i<patientDataLeft.size(); i++){
-            if(x==5){
+           /* if(x==5){
                 break;
+            }*/
+            if(Math.abs(patientDataLeft.get(i)-patientDataRight.get(i))>animationThreshold){
+                if(patientDataRight.get(i)>patientDataLeft.get(i)){
+                    rightCounter++;
+                }
+                else{
+                    leftCounter++;
+                }
             }
-            barEntry=new BarEntry(patientDataLeft.get(i),x);
+        System.out.println("ANIMATION THRESHOLD: "+animationThreshold);
+            System.out.println("RIGHT COUNTER: "+rightCounter);
+            System.out.println("LEFT COUNTER: "+ leftCounter);
+            /*barEntry=new BarEntry(patientDataLeft.get(i),x);
             entries.add(barEntry);
             barEntry2=new BarEntry(patientDataRight.get(i),x);
-            entries2.add(barEntry2);
+            entries2.add(barEntry2);*/
 
             //get time
         /*    SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -240,18 +309,48 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
             int minute=calendar.get(Calendar.MINUTE);
 
             String timeString=hour+":"+minute;*/
-            String timeString=timeStamps.get(i).toString().substring(11,13)+":"+timeStamps.get(i).toString().substring(14,16)+":"+timeStamps.get(i).toString().substring(17,19);
+         /*   String timeString=timeStamps.get(i).toString().substring(11,13)+":"+timeStamps.get(i).toString().substring(14,16)+":"+timeStamps.get(i).toString().substring(17,19);
             labels.add(timeString);
 
 
             ///add line graph points
             float totalOfSides=(patientDataLeft.get(i) + patientDataRight.get(i));
             lineEntries.add(new Entry(totalOfSides,x));
-            x++;
+            x++;*/
         }
 
+        double leftPercent=((double)leftCounter/((double)leftCounter+(double)rightCounter))*100.00;
+        double rightPercent=((double)rightCounter/((double)leftCounter+(double)rightCounter))*100.00;
+        System.out.println("left percent: "+leftPercent);
+        System.out.println("right percent: "+ rightPercent);
 
-        //initialize line data set
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry((int)leftPercent, 0));
+        entries.add(new Entry((int)rightPercent, 1));
+
+
+
+        PieDataSet dataset = new PieDataSet(entries, "Percentage of Leaning on Each Side");
+
+
+// creating labels
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("Left Side");
+        labels.add("Right Side");
+
+
+        PieData data = new PieData(labels, dataset); // initialize Piedata
+        data.setValueTextSize(15f);
+        chart.setData(data); //set data into chart
+
+
+        chart.setDescription("Weight threshold met on each side");  // set the description
+        dataset.setColors(ColorTemplate.COLORFUL_COLORS); // set the color
+
+        chart.animateY(5000);
+
+
+      /*  //initialize line data set
         LineDataSet dataSetLine=new LineDataSet(lineEntries,"Total Pounds");
         dataSetLine.setColors(ColorTemplate.COLORFUL_COLORS);
 
@@ -274,29 +373,29 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
 
 
         //NEED TO FIX
-        /*labels.add(timeStamps.get(0).toString());
+        *//*labels.add(timeStamps.get(0).toString());
         for (int j = 1; j < timeStamps.size() - 1; j++){
             labels.add(j,"");
         }
-        labels.add(timeStamps.size() - 1, timeStamps.get(timeStamps.size() - 1).toString());*/
+        labels.add(timeStamps.size() - 1, timeStamps.get(timeStamps.size() - 1).toString());*//*
 
 
         data = new BarData(labels, dataSets);
-        barChart.setData(data);
+        barChart.setData(data);*/
 
         //set description based on graph view
         if(graphView==R.id.rButtonToday) {
-            barChart.setDescription("Today");
+            chart.setDescription("Today");
         }
         else{
-            barChart.setDescription("Overall");
+            chart.setDescription("Overall");
         }
 
 
-        //animate graph results
+       /* //animate graph results
         barChart.animateXY(2000, 2000);
         barChart.invalidate();
-
+*/
 
       //  LineDataSet dataset = new LineDataSet(entries, "Unequal Weight Distribution");
 
@@ -319,7 +418,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
             intent.putExtra("user_name",user.username);
             startActivity(intent);
         }
-        else if(view==findViewById(R.id.bPreviousSet)){
+       /* else if(view==findViewById(R.id.bPreviousSet)){
             for(int i=5; i>0; i--){
                 if(dataStart-i>=0){
                     dataStart-=i;
@@ -329,8 +428,8 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
 
             getGraphData();
             graph();
-        }
-        else if(view==findViewById(R.id.bNextSet)){
+        }*/
+       /* else if(view==findViewById(R.id.bNextSet)){
             for(int i=5; i>0; i--){
                 if(dataStart+i<items.size()){
                     dataStart+=i;
@@ -340,11 +439,18 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
 
             getGraphData();
             graph();
-        }
+        }*/
         else if(view==findViewById(R.id.bLogout)){
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
-        else if(view==findViewById(R.id.bSwitchGraph)){
+        else if(view==findViewById(R.id.bComments)){
+            Intent displayComments=new Intent();
+            displayComments.putExtra("user_name",user.username);
+            startActivity(displayComments);
+
+        }
+
+       /* else if(view==findViewById(R.id.bSwitchGraph)){
 
             if(showBarGraph){
                 bSwitchGraph.setText("Line Graph");
@@ -358,7 +464,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
                 lineChart.setVisibility(View.VISIBLE);
                 showBarGraph=true;
             }
-        }
+        }*/
     }
     public void getGraphData(){
         //separate data

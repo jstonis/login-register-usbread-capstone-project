@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,16 +15,16 @@
     <!--  Header  Starts-->
     <LinearLayout android:id="@+id/header"
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dip"
         android:background="@layout/header_gradient"
         android:paddingTop="5dip"
         android:paddingBottom="5dip">
         <!-- Logo Start-->
         <ImageView android:src="@drawable/logo"
-            android:layout_width="wrap_content"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dip"
-            android:paddingTop="20dp"/>
+            android:paddingTop="5dp"/>
 
         <!-- Logo Ends -->
     </LinearLayout>
@@ -108,3 +113,4 @@
 
 
 </LinearLayout>
+</ScrollView>

@@ -1,9 +1,11 @@
 package com.example.josceyn.walkerapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
@@ -13,14 +15,18 @@ import android.hardware.usb.UsbManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +60,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     public final String ACTION_USB_PERMISSION = "com.example.josceyn.walkerapp.USB_PERMISSION";
     TextView name, userName, textView, leftReading, rightReading, errorCheck;
     ImageView leftArrow, rightArrow;
-    Button bLogout, bDetails, bDB;
+    Button bLogout, bDetails, bDB, bSettings;
     Student student, patient;
     StudentRepo userRepo;
     PendingIntent mPermissionIntent;
@@ -67,7 +73,9 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     int animationThreshold = 10;
     boolean startRead = false;
     byte[] syncArray;
-    boolean startbytefound=false;
+    boolean startbytefound=false, showVals=false;
+    Switch showValues;
+
 
 
    /* public UserDisplay(Student student){
@@ -122,8 +130,21 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
             testStr=new String(buffer,"UTF-8");
             String rightSide=testStr.substring(3,6);
             String leftSide=String.valueOf(testStr.charAt(10))+String.valueOf(testStr.charAt(11))+String.valueOf(testStr.charAt(12));
-            tvAppend(leftReading,leftSide);
-            tvAppend(rightReading,rightSide);
+
+
+          if(showVals) {
+              //show readings
+              leftReading.setVisibility(View.VISIBLE);
+              rightReading.setVisibility(View.VISIBLE);
+
+              tvAppend(leftReading, leftSide);
+              tvAppend(rightReading, rightSide);
+          }
+            else{
+              //hide readings
+              leftReading.setVisibility(View.INVISIBLE);
+              rightReading.setVisibility(View.INVISIBLE);
+          }
             animate(leftSide,rightSide);
             addDataToDB(leftSide,rightSide);
         } catch (UnsupportedEncodingException e) {
@@ -435,6 +456,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                             serialPort.setStopBits(UsbSerialInterface.STOP_BITS_1);
                             serialPort.setParity(UsbSerialInterface.PARITY_NONE);
                             serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);
+                            System.out.println("EXPECTING DATA...");
 
 /*
                                 serialPort.syncRead(syncArray, 0);
@@ -474,17 +496,22 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                             //   tvAppend(leftReading,"Serial Connection Opened!\n");
 
                         } else {
+                            System.out.println("PORT NOT OPEN");
                             Log.d("SERIAL", "PORT NOT OPEN");
                         }
                     } else {
+                        System.out.println("PORT IS NULL");
                         Log.d("SERIAL", "PORT IS NULL");
                     }
                 } else {
+                    System.out.println("PERM NOT GRANTED");
                     Log.d("SERIAL", "PERM NOT GRANTED");
                 }
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+                System.out.println("USB DEVICE ATTACHED");
                 onUSBStart();
             } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+                System.out.println("USB DEVICE DETACHED");
                 onUSBStop();
 
             }
@@ -559,6 +586,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_display);
+
         syncArray = new byte[33];
         userRepo = new StudentRepo(this);
         userName = (TextView) findViewById(R.id.userName);
@@ -569,12 +597,25 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         leftReading = (TextView) findViewById(R.id.leftReading);
         rightReading = (TextView) findViewById(R.id.rightReading);
         errorCheck = (TextView) findViewById(R.id.errorCheck);
+        showValues=(Switch) findViewById(R.id.showValues);
+        bSettings=(Button) findViewById(R.id.bSettings);
 
         leftArrow.setVisibility(View.GONE);
         rightArrow.setVisibility(View.GONE);
 
         bDetails.setOnClickListener(this);
         bLogout.setOnClickListener(this);
+        bSettings.setOnClickListener(this);
+        showValues.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    showVals=true;
+                }
+                else{
+                    showVals=false;
+                }
+            }
+        });
         // load the animation
         Blink = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.blinking_animation);
@@ -589,7 +630,9 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         Intent intent = getIntent();
         userName.setText(intent.getStringExtra("user_name"));
         patient = userRepo.getStudentByUsername(userName.getText().toString());
-
+        //initialize threshold if null
+        patient.animationThreshold=20;
+        animationThreshold=20;
 
         System.out.println("In user display: " + userName.getText());
         IntentFilter filter = new IntentFilter();
@@ -619,6 +662,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
                 } else {
                     connection = null;
                     device = null;
+                    System.out.println("CONNECTION IS NULL");
                 }
 
                 if (!keep)
@@ -657,11 +701,50 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
             if(patient.usbdata==null){
                 System.out.println("USER DATA IS NULL BEFORE GRAPHING");
             }
-            main.putExtra("username", userName.getText());
+
+
+            //on usb stop
+            if(connection!=null) {
+                onUSBStop();
+            }
+            Bundle extras = new Bundle();
+            extras.putString("username",userName.getText().toString());
+            extras.putString("animationThreshold", String.valueOf(animationThreshold));
+            main.putExtras(extras);
+
+           // main.putExtra("username", userName.getText());
             startActivity(main);
         } else if (v == findViewById(R.id.bLogout)) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+        }
+        else if(v==findViewById(R.id.bSettings)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Unequal Weight Threshold");
+
+// Set up the input
+            final EditText input = new EditText(this);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+// Set up the buttons
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    animationThreshold = Integer.parseInt(input.getText().toString());
+                    patient.animationThreshold=animationThreshold;
+                    dialog.cancel();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
         }
 
 
