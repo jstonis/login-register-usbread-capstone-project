@@ -33,25 +33,32 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
         }
         else
         {
+            StudentRepo repo=new StudentRepo(this);
+           if(repo.getStudentByUsername(etUsername.getText().toString()).name!=null) {
 
-            if (etPassword.getText().toString().equals(getPasswordOfUser())){
-                if(!isAdmin(student)) {
-                    Toast.makeText(MainActivity.this,
-                            "Congrats: Login Successfull", Toast.LENGTH_LONG)
-                            .show();
-                    dialog.dismiss();
-                    Intent main = new Intent(getApplicationContext(), UserDisplay.class);
-                    main.putExtra("user_name", student.username);
-                    startActivity(main);
-                }
-                else{
-                    displayAdminPage(student);
-                }
-            } else {
-                Toast.makeText(MainActivity.this,
-                        "User Name or Password does not match",
-                        Toast.LENGTH_LONG).show();
-            }
+               if (etPassword.getText().toString().equals(getPasswordOfUser())) {
+                   if (!isAdmin(student)) {
+                       Toast.makeText(MainActivity.this,
+                               "Congrats: Login Successfull", Toast.LENGTH_LONG)
+                               .show();
+                       dialog.dismiss();
+                       Intent main = new Intent(getApplicationContext(), UserDisplay.class);
+                       main.putExtra("user_name", student.username);
+                       startActivity(main);
+                   } else {
+                       displayAdminPage(student);
+                   }
+               } else {
+                   Toast.makeText(MainActivity.this,
+                           "User Name or Password does not match",
+                           Toast.LENGTH_LONG).show();
+               }
+           }
+            else{
+               Toast.makeText(MainActivity.this,
+                       "Username doesn't exist!",
+                       Toast.LENGTH_LONG).show();
+           }
         }
 
         /*else {

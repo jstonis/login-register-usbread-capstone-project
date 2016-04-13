@@ -204,7 +204,7 @@ public class StudentRepo {
                 Student.KEY_username + "=?";// It's a good practice to use parameter ?, instead of concatenate string
 
         int iCount =0;
-        Student student = new Student();
+        Student student=new Student();
 
         Cursor cursor = db.rawQuery(selectQuery, new String[] { username } );
 

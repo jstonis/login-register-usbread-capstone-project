@@ -191,7 +191,6 @@ public class AdminGraph extends Activity implements View.OnClickListener {
     public void getGraphData(){
         //separate data
 
-        System.out.println("ITEMS SIZE HERE: " +items.size());
 
         for(int i=0; i<items.size(); i++){
             String [] temp= items.get(i).toString().split(",");
@@ -201,12 +200,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                 //check month, day, year
                 Calendar c=Calendar.getInstance();
 
-                System.out.println("MONTH: "+c.get(Calendar.MONTH));
-                System.out.println("DAY: "+c.get(Calendar.DAY_OF_MONTH));
-                System.out.println("YEAR: "+c.get(Calendar.YEAR));
-                System.out.println("MONTH IN TIMESTAMP: "+ temp[0].substring(5,7));
-                System.out.println("DAY IN TIMESTAMP: "+ temp[0].substring(8,10));
-                System.out.println("YEAR IN TIMESTAMP: "+ temp[0].substring(0,4));
+
                 if(Integer.parseInt(temp[0].substring(5,7))==c.get(Calendar.MONTH)+1 && Integer.parseInt(temp[0].substring(8,10))==c.get(Calendar.DAY_OF_MONTH) && Integer.parseInt(temp[0].substring(0,4))==c.get(Calendar.YEAR)){
                     timeStamps.add(temp[0]);
                     patientDataRight.add(Float.parseFloat(temp[1]));
@@ -254,9 +248,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                     leftCounter++;
                 }
             }
-            System.out.println("ANIMATION THRESHOLD: "+animationThreshold);
-            System.out.println("RIGHT COUNTER: "+rightCounter);
-            System.out.println("LEFT COUNTER: " + leftCounter);
+
             /*barEntry=new BarEntry(patientDataLeft.get(i),x);
             entries.add(barEntry);
             barEntry2=new BarEntry(patientDataRight.get(i),x);
@@ -294,8 +286,6 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
         double leftPercent=((double)leftCounter/((double)leftCounter+(double)rightCounter))*100.00;
         double rightPercent=((double)rightCounter/((double)leftCounter+(double)rightCounter))*100.00;
-        System.out.println("left percent: "+leftPercent);
-        System.out.println("right percent: " + rightPercent);
 
         ArrayList<Entry> entries = new ArrayList<>();
         entries.add(new Entry((int)leftPercent, 0));
