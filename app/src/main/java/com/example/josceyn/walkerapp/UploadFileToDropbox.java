@@ -32,6 +32,7 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> implemen
 
     public UploadFileToDropbox(Context context, DropboxAPI<?> dropbox,
                                String path, Student patient) {
+        System.out.println("IN DROPBOX CLASS");
         this.context = context.getApplicationContext();
         this.dropbox = dropbox;
         this.path = path;
@@ -52,7 +53,9 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> implemen
             //comments file
             tempFile1 = File.createTempFile("file", ".csv", tempDir);
             fr1 = new FileWriter(tempFile1);
-            writeFile(fr1,patient.comments, "comments");
+            if(patient.comments!=null) {
+                writeFile(fr1, patient.comments, "comments");
+            }
             fr1.close();
 
             FileInputStream fileInputStream = new FileInputStream(tempFile1);
@@ -64,7 +67,9 @@ public class UploadFileToDropbox extends AsyncTask<Void, Void, Boolean> implemen
             //data file
             tempFile2 = File.createTempFile("file", ".csv", tempDir);
             fr2 = new FileWriter(tempFile2);
-            writeFile(fr2,patient.usbdata, "usbdata");
+            if(patient.usbdata!=null) {
+                writeFile(fr2, patient.usbdata, "usbdata");
+            }
             fr2.close();
 
             FileInputStream fileInputStream2 = new FileInputStream(tempFile2);

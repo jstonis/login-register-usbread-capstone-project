@@ -474,10 +474,12 @@ public class AdminGraph extends Activity implements View.OnClickListener {
             adminComment.setText(comments.get(comments.size() - 1).toString());
 
         } else if (v == findViewById(R.id.dropbox)) {
+            System.out.println("IN DROPBOX CLICK!   ");
 
             if (isLoggedIn) {
                 dropbox.getSession().unlink();
                 loggedIn(false);
+                System.out.println("IN LGGED IN");
             } else {
                 dropbox.getSession().startAuthentication(AdminGraph.this);
             }
@@ -503,9 +505,10 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                     break;
                 }
             }*/
-
-            getGraphData();
-            graph();
+            if(selectedUser.usbdata!=null) {
+                getGraphData();
+                graph();
+            }
 
 
     }
