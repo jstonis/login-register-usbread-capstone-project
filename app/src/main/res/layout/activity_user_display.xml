@@ -80,30 +80,13 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true" />-->
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:id="@+id/leftArrow"
-            android:src="@drawable/arrow_left"
-            android:layout_alignTop="@+id/rightArrow"
-            android:layout_alignParentStart="true" />
-
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:id="@+id/rightArrow"
-            android:src="@drawable/arrow_right"
-            android:layout_below="@+id/showValues"
-            android:layout_toEndOf="@+id/bLogout"
-            android:layout_marginStart="60dp" />
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Details"
             android:id="@+id/bDetails"
-            android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@+id/showValues" />
+            android:layout_alignTop="@+id/bSettings"
+            android:layout_toEndOf="@+id/leftReading" />
 
         <Button
             android:layout_width="wrap_content"
@@ -111,16 +94,18 @@
             android:text="Logout"
             android:id="@+id/bLogout"
             android:layout_alignParentBottom="true"
-            android:layout_toEndOf="@+id/showValues" />
+            android:layout_toStartOf="@+id/rightReading" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/leftReading"
-            android:layout_above="@+id/leftArrow"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentTop="true"
+            android:textSize="70dp"
+            android:text="000"
+            android:layout_above="@+id/leftArrow" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -129,7 +114,9 @@
             android:id="@+id/rightReading"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@+id/leftReading" />
+            android:textSize="70dp"
+            android:text="000"
+            android:layout_above="@+id/leftArrow" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -156,6 +143,23 @@
             android:id="@+id/bSettings"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/leftArrow"
+            android:src="@drawable/arrow_left"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/bDetails"
+            android:layout_alignEnd="@+id/leftReading" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rightArrow"
+            android:src="@drawable/arrow_right"
+            android:layout_below="@+id/rightReading"
+            android:layout_toEndOf="@+id/bLogout" />
 
 
     </RelativeLayout>
