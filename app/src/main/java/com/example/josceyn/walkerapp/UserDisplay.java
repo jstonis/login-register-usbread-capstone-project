@@ -70,7 +70,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
     UsbDeviceConnection connection;
     String strBuilder;
     Animation Blink;
-    int animationThreshold = 10;
+    int animationThreshold;
     boolean startRead = false;
     byte[] syncArray;
     boolean startbytefound=false, showVals=false;
@@ -599,6 +599,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_display);
 
+        animationThreshold=10;
         syncArray = new byte[33];
         userRepo = new StudentRepo(this);
         userName = (TextView) findViewById(R.id.userName);
@@ -611,6 +612,9 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         errorCheck = (TextView) findViewById(R.id.errorCheck);
         showValues=(Switch) findViewById(R.id.showValues);
         bSettings=(Button) findViewById(R.id.bSettings);
+
+        //debug
+        System.out.println("Animation tresh is: "+ animationThreshold);
 
         leftArrow.setVisibility(View.GONE);
         rightArrow.setVisibility(View.GONE);
@@ -642,9 +646,8 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         Intent intent = getIntent();
         userName.setText(intent.getStringExtra("user_name"));
         patient = userRepo.getStudentByUsername(userName.getText().toString());
-        //initialize threshold if null
-        patient.animationThreshold=20;
-        animationThreshold=20;
+        patient.animationThreshold=10;
+
 
         System.out.println("In user display: " + userName.getText());
         IntentFilter filter = new IntentFilter();
@@ -721,7 +724,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
             }
             Bundle extras = new Bundle();
             extras.putString("username",userName.getText().toString());
-            extras.putString("animationThreshold", String.valueOf(animationThreshold));
+          //  extras.putString("animationThreshold", String.valueOf(animationThreshold));
             main.putExtras(extras);
 
            // main.putExtra("username", userName.getText());
@@ -757,6 +760,7 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
             });
 
             builder.show();
+            System.out.println("animation threshold is: "+ animationThreshold);
         }
 
 

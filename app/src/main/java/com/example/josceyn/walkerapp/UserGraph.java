@@ -126,12 +126,12 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
 
 
        // String test=intent.getStringExtra("username");
-        animationThreshold=Integer.parseInt(extras.getString("animationThreshold"));
+      //  animationThreshold=Integer.parseInt(extras.getString("animationThreshold"));
         String test=extras.getString("username");
         userName.setText(extras.getString("username"));
         user=userRepo.getStudentByUsername(test);
 
-        if(user.usbdata==null) {
+       /* if(user.usbdata==null) {
 
 
 
@@ -142,7 +142,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
                 //if new data, do this
                 user.usbdata = "";
                 //add to first index of array
-                usbData.add(0, userRepo.getCurrentTimeStamp() + "," + 2 + "," + 30);
+                usbData.add(0, userRepo.getCurrentTimeStamp() + "," + 30 + "," + 2);
 
 
                 //instantiate JSONObject
@@ -160,7 +160,7 @@ public class UserGraph extends AppCompatActivity implements View.OnClickListener
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
             adminComments=new ArrayList();
 
         items=new ArrayList();

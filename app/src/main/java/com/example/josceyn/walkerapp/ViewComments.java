@@ -74,9 +74,10 @@ public class ViewComments extends Activity implements View.OnClickListener{
         @Override
     public void onClick(View v) {
         if(v==findViewById(R.id.bBack)){
-            Intent userGraph=new Intent(this,UserDisplay.class);
+            Intent userGraph=new Intent(this,UserGraph.class);
             Bundle bundles=new Bundle();
-            bundles.putString("user_name", user.username);
+            bundles.putString("username", user.username);
+         //   bundles.putInt("animationThreshold",user.animationThreshold);
             System.out.println(user.username);
             userGraph.putExtras(bundles);
             startActivity(userGraph);
