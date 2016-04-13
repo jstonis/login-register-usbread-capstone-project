@@ -134,16 +134,28 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
 
           if(showVals) {
               //show readings
-              leftReading.setVisibility(View.VISIBLE);
-              rightReading.setVisibility(View.VISIBLE);
+              runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                      leftReading.setVisibility(View.VISIBLE);
+                      rightReading.setVisibility(View.VISIBLE);
+                  }
+              });
+
 
               tvAppend(leftReading, leftSide);
               tvAppend(rightReading, rightSide);
           }
             else{
               //hide readings
-              leftReading.setVisibility(View.INVISIBLE);
-              rightReading.setVisibility(View.INVISIBLE);
+
+              runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                      leftReading.setVisibility(View.INVISIBLE);
+                      rightReading.setVisibility(View.INVISIBLE);
+                  }
+              });
           }
             animate(leftSide,rightSide);
             addDataToDB(leftSide,rightSide);
