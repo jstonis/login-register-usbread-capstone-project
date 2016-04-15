@@ -1,6 +1,7 @@
 package com.example.josceyn.walkerapp;
 
 import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -745,11 +746,18 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
 
 // Set up the buttons
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+
+               //if attempt to change threshold
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    animationThreshold = Integer.parseInt(input.getText().toString());
-                    patient.animationThreshold=animationThreshold;
-                    dialog.cancel();
+                    if(input.getText().toString()!=null) {
+                        if(isNumeric(input.getText().toString())) {
+                            animationThreshold = Integer.parseInt(input.getText().toString());
+                            patient.animationThreshold = animationThreshold;
+                            dialog.cancel();
+                        }
+                    }
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -819,5 +827,15 @@ public class UserDisplay extends Activity implements View.OnClickListener, Anima
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+    public boolean isNumeric(String num){
+        try{
+            int threshold=Integer.parseInt(num);
+
+        }
+        catch(NumberFormatException e){
+            return false;
+        }
+        return true;
     }
 }

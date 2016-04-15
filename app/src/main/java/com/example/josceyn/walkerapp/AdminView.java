@@ -23,6 +23,8 @@ public class AdminView extends ListActivity implements android.view.View.OnClick
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //initialize
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_view);
         Intent intent = getIntent();

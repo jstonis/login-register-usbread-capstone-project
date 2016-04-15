@@ -404,10 +404,13 @@ public class AdminGraph extends Activity implements View.OnClickListener {
         if (v == findViewById(R.id.bLogout)) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-        } else if (v == findViewById(R.id.bSubmit)) {
+        }
+
+
+        //if submitting comment
+        else if (v == findViewById(R.id.bSubmit)) {
 
             ArrayList comments = new ArrayList();
-
             if (adminComment.getText().toString() != null) {
 
                 JSONObject json = null;
@@ -426,6 +429,7 @@ public class AdminGraph extends Activity implements View.OnClickListener {
 
                 JSONObject json2 = new JSONObject();
                 if (newComment) {
+                    System.out.println("NEW COMMENT");
                     position = 0;
                     comments.add(position, repo.getCurrentTimeStamp() + "," + adminComment.getText());
 
@@ -437,9 +441,12 @@ public class AdminGraph extends Activity implements View.OnClickListener {
                         e.printStackTrace();
                     }
                 } else {
-                    position = comments.size() - 1;
+                    position = 0;
                     comments.remove(position);
-                    comments.add(position, adminComment.getText());
+                    System.out.println("TESTING...GET PREV COMMENT: "+ comments.get(0));
+
+                    comments.add(position, repo.getCurrentTimeStamp()+","+adminComment.getText().toString());
+                    System.out.println("Comment is: " + adminComment.getText());
 
                     try {
                         json2.put("comments", new JSONArray(comments));
@@ -471,7 +478,9 @@ public class AdminGraph extends Activity implements View.OnClickListener {
             }
             ArrayList comments = repo.getArrayList(json.optJSONArray("comments"));
 
-            adminComment.setText(comments.get(comments.size() - 1).toString());
+            String [] temp=comments.get(0).toString().split(",");
+            if(temp.length>=2){
+            adminComment.setText(temp[1]);}
 
         } else if (v == findViewById(R.id.dropbox)) {
             System.out.println("IN DROPBOX CLICK!   ");
